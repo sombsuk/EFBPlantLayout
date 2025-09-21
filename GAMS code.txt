@@ -1,0 +1,2482 @@
+*Material selection for equipment items model ==========================================================================================================
+
+set
+    i       equipment i   /i1*i57/
+    k       floor   /1,2,3/
+    IP(i)   set of pertinent process unit /i8, i10, i11, i14, i15, i23, i24, i37, i40, i41, i45, i46, i54, i56/   
+    kk      protection device configuration /1*7/
+    Ki      set of protection device configurations suitable for installation on item i /K1*K6/
+    s       candidate area /s1*s7/
+    kt(k)   first floor /1/
+    sec     section /sec1*sec7/
+    te      material /te1*te7/
+    typ     type of equipment /typ1*typ5/
+    st      type of structure /st1, st2/ ;
+    
+Alias (i,j);
+    
+Alias (sec,secx);
+    
+parameter
+    vol(i)          volume of equipment(m^3)
+    vols(i)         volume of equipment for storage(m^3)
+    p(te)           density of material(kg per m^3) /te1 7300, te2 7500, te3 8900, te4 4540, te5 7870, te6 7850, te7 8000/
+    denf(i)         density of fluid inside equipment(kg per m^3)/i1 1.38, i2 1.19, i3 1265, i4*i11 1265, i12 1.18, i13 5.16, i14 3487, i15 2250, i16 0.36, i17 0.5, i18 0.5, i19 2250, i20 0.5, i21 1.94, i22 0.41, i23 1.18, i24 0.87, i25 1.57, i26 1265, i27 434, i28 523, i29 50, i30 378, i31 641, i32 523, i33 1265, i34 3.37, i35 651, i36 90.5, i37 54, i38 762, i39 13, i40 1.08, i41 859, i42 767, i43 762, i44 434, i45 716, i46 1102, i47 1102, i48 1, i49 3.36, i50 18.49, i51 27, i52 49.83, i53 30.93, i54 49.7, i55 47.11, i56 721.29, i57 1102.1/ 
+    massf(i)        mass of fluid inside equipment (kg)
+    group(i,sec)    set of section with equipment;
+    
+parameter
+        alpha(i)   width of equipments i (metre)
+          / i1   1.09
+            i2   1.1
+            i3   5.17
+            i4   1.4
+            i5   2.17
+            i6   2
+            i7   0.78
+            i8   0.8
+            i9   1.4         
+            i10  0.8       
+            i11  0.8       
+            i12  1.1       
+            i13  1.1               
+            i14  1               
+            i15  1               
+            i16  1.38              
+            i17  1.4               
+            i18  0.6               
+            i19  0.6               
+            i20  1.1               
+            i21  2.6                       
+            i22  2                       
+            i23  1.2                       
+            i24  1.5                       
+            i25  2.4                       
+            i26  0.5                       
+            i27  1.4                               
+            i28  1.4                               
+            i29  1.4                               
+            i30  2.1                               
+            i31  2.1                               
+            i32  2.1                               
+            i33  0.78                               
+            i34  0.6                               
+            i35  1.4                               
+            i36  2.4                               
+            i37  0.6                               
+            i38  2.1                                      
+            i39  2.1                                       
+            i40  0.5                                       
+            i41  1.3                                       
+            i42  0.6                                       
+            i43  2.6                                       
+            i44  2.3                                       
+            i45  0.8                                       
+            i46  2.05                                       
+            i47  0.5                                       
+            i48  2.6                                       
+            i49  0.6                                       
+            i50  0.28                                               
+            i51  1.4                                               
+            i52  1.4                                               
+            i53  0.28                                               
+            i54  1.5                                               
+            i55  2.3                                               
+            i56  0.45                                               
+            i57  1.4           /
+            
+        beta(i)  length of equipment i (m)
+          / i1   0.43
+            i2   3.8
+            i3   4.19
+            i4   1.4
+            i5   5.56
+            i6   2
+            i7   2.15
+            i8   0.8
+            i9   1.4        
+            i10  5      
+            i11  5       
+            i12  0.43       
+            i13  0.43               
+            i14  1.15               
+            i15  1.15               
+            i16  1.38               
+            i17  1.4               
+            i18  0.7               
+            i19  0.7               
+            i20  0.43               
+            i21  2.6                       
+            i22  2                       
+            i23  1.2                       
+            i24  1.5                       
+            i25  5.8                       
+            i26  0.5                       
+            i27  1.4                               
+            i28  1.4                               
+            i29  1.4                               
+            i30  2.1                               
+            i31  2.1                               
+            i32  2.1                               
+            i33  1                               
+            i34  1.1                               
+            i35  1.4                               
+            i36  5.8                               
+            i37  0.6                               
+            i38  2.1                                       
+            i39  2.1                                       
+            i40  0.5                                       
+            i41  1.3                                       
+            i42  3.7                                       
+            i43  2.6                                       
+            i44  5.8                                       
+            i45  0.8                                       
+            i46  2.05                                       
+            i47  0.8                                       
+            i48  2.6                                       
+            i49  1.1                                       
+            i50  1.58                                               
+            i51  1.4                                               
+            i52  1.4                                               
+            i53  1.58                                               
+            i54  1.5                                               
+            i55  5.8                                               
+            i56  0.45                                              
+            i57  1.4           /
+            
+        hita(i) hight of equipment i (m)
+          / i1   0.6
+            i2   1.1
+            i3   4.29
+            i4   1.7
+            i5   2.1
+            i6   3
+            i7   0.6
+            i8   5
+            i9   1.7         
+            i10  0.8       
+            i11  0.8       
+            i12  0.6       
+            i13  0.6               
+            i14  1.35               
+            i15  1.35               
+            i16  2.07               
+            i17  1.7               
+            i18  0.6               
+            i19  0.6               
+            i20  0.6               
+            i21  4.3                       
+            i22  4                       
+            i23  3.7                       
+            i24  4.5                       
+            i25  2.4                       
+            i26  0.8                       
+            i27  1.7                               
+            i28  1.7                               
+            i29  1.7                               
+            i30  1.05                               
+            i31  1.05                               
+            i32  1.05                               
+            i33  0.78                               
+            i34  0.6                               
+            i35  1.7                               
+            i36  2.4                               
+            i37  2                               
+            i38  2.1                                       
+            i39  2.1                                       
+            i40  3.7                                       
+            i41  1.8                                       
+            i42  0.6                                       
+            i43  4.3                                       
+            i44  2.3                                       
+            i45  9.14                                       
+            i46  8.54                                       
+            i47  0.5                                       
+            i48  4.3                                       
+            i49  0.6                                       
+            i50  0.28                                               
+            i51  1.7                                               
+            i52  1.7                                               
+            i53  0.28                                               
+            i54  12                                               
+            i55  2.3                                               
+            i56  3.66                                               
+            i57  1.7   /;
+            
+        
+table group(i,sec) equipment in each groups
+            sec1    sec2    sec3   sec4     sec5    sec6    sec7 
+        i1  1
+        i2  1
+        i3  1
+        i4  1             
+        i5  1        
+        i6  1        
+        i7  1                
+        i8          1       
+        i9          1   
+        i10         1
+        i11         1
+        i12         1
+        i13                 1
+        i14                 1
+        i15                 1
+        i16                 1
+        i17                 1
+        i18                 1
+        i19                 1
+        i20                 1
+        i21                         1
+        i22                         1
+        i23                         1
+        i24                         1
+        i25                         1
+        i26                         1
+        i27                         1
+        i28                         1
+        i29                         1
+        i30                                 1
+        i31                                 1
+        i32                                 1
+        i33                                 1
+        i34                                 1
+        i35                                 1
+        i36                                 1
+        i37                                 1
+        i38                                 1
+        i39                                 1
+        i40                                         1
+        i41                                         1
+        i42                                         1
+        i43                                         1
+        i44                                         1
+        i45                                         1
+        i46                                         1
+        i47                                         1
+        i48                                                 1
+        i49                                                 1
+        i50                                                 1
+        i51                                                 1
+        i52                                                 1
+        i53                                                 1
+        i54                                                 1
+        i55                                                 1
+        i56                                                 1
+        i57                                                 1             ;
+        
+
+$ontext
+=====================================================================================================
+te1 = cast iron
+te2 = stainless steel
+te3 = nickel
+te4 = titanium
+te5 = stainless steel 316
+te6 = carbon steel
+te7 = stainless steel 304
+=====================================================================================================
+$offtext
+
+$ontext
+=====================================================================================================
+typ1 = pump
+typ2 = compressors
+typ3 = heat ex
+typ4 = heater
+typ5 = vessel
+=====================================================================================================
+$offtext
+
+table fm(te,typ) material factor of each equipment type
+                typ1    typ2    typ3    typ4    typ5
+        te1     1
+        te2     2       2.5     3       1.7     1.7
+        te3     3.5     5       1.2             5.4
+        te4     9.7             2.6             7.7
+        te5                     1.1             2.1
+        te6                                     1
+        te7                                     1.7;
+        
+display fm;
+
+parameter Pd(i)         operating pressure (psig)
+          Po(i)         design pressure (psig) /i1*i7 17.4, i8*i9 14.7, i10*i11 17.4, i12*i13 17.4, i14*i15 145, i16*i18 17.4, i19 11.32, i20 17.4, i21 11.32, i22 17.4, i23 14.5, i24*i26 14.7, i27*i28 1262, i29 1305, i30*i31 290, i32 1306, i33*i34 17.4, i35*i37 1262, i38 290, i39 1262, i40 203, i41*i44 290, i45 22, i46 17.4, i47 17.4, i48 189, i49 17.4, i50 1305, i51 290, i52*i54 1305, i55 290, i56 290, i57 1305/
+          tp(i)         wall thickness to withstand the internal pressure (inches)
+          str           maximum allowable stress (psi) /15000/
+          weld          fractional weld efficiency /1/
+          hor(i)        1 indicated that i is horizontal vessel /i42 1/
+          orr(i)        1 indicated that i is vertical vessel /i4 1, i8 1, i9 1, i10*i11 1, i14*i15 1, i17 1, i21 1, i23*i24 1, i27*i29 1, i35 1, i37 1, i40*i41 1, i43 1, i45*i46 1, i48 1, i51*i52 1, i54 1, i56*i57 1/
+          HoAndOrr(i)   1 indicated that i is horizontal and vertical vessel /i4 1, i8 1, i9 1, i10*i11 1, i14*i15 1, i17 1, i21 1, i23*i24 1, i27*i29 1, i35 1, i37 1, i40*i43 1, i45*i46 1, i48 1, i51*i52 1, i54 1, i56*i57 1/
+          tow(i)        1 indicated that i is tower vessel /i45*i46  1/
+          dis(i)        1 indicated that i is distillation column /i45*i46  1/
+          comp(i)       1 indicated that i is compressor /i1 1, i12*i13 1, i20 1, i34 1, i49 1/
+          pump(i)       1 indicated that i is pump /i26 1, i33 1, i47 1/
+          heatex(i)     1 indicated that i is heat exchanger /i25 1, i30*i32 1, i36 1, i38*i39 1, i44 1, i53 1, i55 1/
+          heater(i)     1 indicated that i is heater /i2 1, i7 1, i18*i19 1, i50 1/
+          reactor(i)    1 indicated that i is reactor /i8 1, i10*i11 1, i14*i15 1, i37 1, i54 1/
+          screener(i)   1 indicated that i is screener /i6 1/
+          tray(i)       1 indicated that i is tray dryer /i3 1/
+          cyclone(i)    1 indicated that i is cyclones /i16 1, i22 1/
+          gyratory(i)   1 indicated that i is gyratory crushers /i5 1/
+          cpl(i)        cost for platform
+          cbt(i)        base cost for trays
+          fnt(i)        number of tray factor
+          nt(i)         number of tray  /i45 8, i46 7/
+          ftt(i)        type of tray    /i45*i46 1/
+          ftm(i)        material factor for distillation
+          ct(i)         cost for installed tray
+          fd            electric motor drive for compressors /1.25/
+          pc(i)         horsepower(Hp) of compressor /i1 1, i12 100, i13 13434, i20 1153, i34 171, i49 221/
+          cb(i)         base cost of compressors
+          sp(i)         s factor for pump
+          flow(i)       flowrate(gal per minute) of pump /i26 650, i33 675, i47 4/
+          head(i)       pump head (ft) of pump /i26 32, i33 2301, i47 2732/
+          cbp(i)        base pump cost
+          ft            factor for centrifugal pump /1.5/
+          pcc(i)        horse power for pump
+          pb(i)         pump brake horsepower of pump (hp) /i26 635, i33 663, i47 3/
+          cbm(i)        base cost of motor for pump
+          cpm(i)        motor cost for pump
+          fym           factor for motor(open drip-proof enclosure) /1/
+          cbh(i)        base cost of double pipe heat ex
+          ah(i)         area of heat ex and tray dryer(sq ft) and screener /i3 233, i6 43, i25 420, i30 348, i31 10, i32 0.04, i36 472, i38 36, i39 53, i44 132, i53 0.05, i55 23/
+          fp(i)         factor for heat ex
+          cbf(i)        base cost of fired heater
+          ener(i)       heat duty of fired heater(btu per hour) /i2 4747, i7 19904053, i18 1157975, i19 1157975, i50 1565781/
+          fpf(i)        pressure factor for fired heater
+          cpd(i)        cost of tray dryer ($ per 10^5)
+          cpc(i)        cost of cyclone ($ per 10^5)
+          gasflow(i)    gas flowrate(ft^3 per min) of cyclone /i16 34572, i22 99694/
+          cpg(i)        cost of gyratory crushers ($ per 10^5)
+          sfeed(i)      mass feed rate(ton per hr) of gyratory crusher /i5 139/
+          cps(i)        cost for vibrating screens 1 desk ($ per 10^5)
+          cpa(i)        cost for agitator
+          hp(i)         hp for agitator(hp) /i8 60, i10*i11 60, i14*i15 60, i37 60, i54 60/ 
+          capweight(st) weight capacity for structure(kg per m^2) /st1 1000, st2 1500/
+          costst(st)    structure cost for weight($ per m^2) /st1 222, st2 300/;
+          
+vol(i)$(Po(i)>1000) = alpha(i)*beta(i)*hita(i)*0.4;
+
+vol(i)$((Po(i)>500) and (Po(i)<1000)) = alpha(i)*beta(i)*hita(i)*0.3;
+
+vol(i)$(Po(i)<500) = alpha(i)*beta(i)*hita(i)*0.2;
+
+vols(i) = (alpha(i)*beta(i)*hita(i))-vol(i);
+
+massf(i) = vols(i)*denf(i);
+
+display vol, vols, massf;
+
+Pd(i)$HoAndOrr(i)   = exp(0.60608+(0.91615*log(Po(i)))+(0.0015655*(log(Po(i)))**2));
+
+tp(i)$HoAndOrr(i)   = ((Pd(i)*alpha(i)*39.37)/((2*str*weld)-(1.2*Pd(i))))+0.2;
+
+display Pd, tp;
+
+*horizontal vessel platform
+
+cpl(i)              = 2005*(alpha(i)*39.37)**0.20294;
+
+*vertical vessel platform
+
+cpl(i)$orr(i)       = 361.8*((alpha(i)*39.37)**0.7396)*hita(i)**0.70684;
+
+*tower vessel platform
+
+cpl(i)$(tow(i) and dis(i))  = 300.9*((alpha(i)*39.37)**0.63316)*hita(i)**0.80161;
+
+* trays for distillation
+
+cbt(i)$dis(i)       = 468*exp(0.1739*alpha(i)*3.281);
+
+fnt(i)$dis(i)       = 2.25/(1.0414**nt(i));
+
+*316 stainless steel is used since it has widele range of fabrication properties (table 7.1 in ?????????????)
+
+ftm(i)$dis(i)       = 1.401+(0.0724*alpha(i)*3.281);
+
+ct(i)$dis(i)        = nt(i)*fnt(i)*ftt(i)*ftm(i)*cbt(i)*(550/500)/10**5;
+
+display Pd, tp, cpl, cbt, ct;
+
+* cost for compressors (centrifugal type)
+
+cb(i)$comp(i) = exp(7.58+0.8*log(pc(i)));
+
+display cb;
+
+*cost for centrifugal pump
+
+sp(i)$pump(i)       = flow(i)*head(i)**0.5;
+
+cbp(i)$pump(i)      = exp(9.7171-(0.6019*log(sp(i)))+(0.0519*(log(sp(i)))**2));
+
+pcc(i)$pump(i)      = pb(i)/(0.8+0.0319*log(pb(i))-(0.00182*log(pb(i))**2));
+
+cbm(i)$pump(i)      = exp(5.8259+0.13141*log(pcc(i))+(0.053255*(log(pcc(i)))**2)+(0.028628*(log(pcc(i)))**3)-(0.0035549*(log(pcc(i)))**4));
+
+cpm(i)$pump(i)      = fym*cbm(i)*550/500;
+
+display cbp, pcc, cbm, cpm;
+
+*cost for heat ex
+
+cbh(i)$heatex(i)    = exp(7.146+0.16*log(ah(i)));
+
+fp(i)$heatex(i)     = 0.851+0.1292*(Po(i)/600)+0.0198*(Po(i)/600)**2;
+
+display cbh, fp;
+
+*cost for fired heater
+
+cbf(i)$heater(i)    = exp(0.32325+0.766*log(ener(i)));
+
+fpf(i)$heater(i)    = 0.986-0.0035*(Po(i)/500)+0.0175*(Po(i)/500)**2;
+
+display cbf, fpf;
+
+*cost for agitators (turbine, closed vessel)
+
+cpa(i)$reactor(i)   = (3620*hp(i)**0.57)/10**5;
+
+display cpa;
+
+*cost for vibrating screens 1 desk (carbon steel is used in this eq)
+
+cps(i)$screener(i)  = ((1400*ah(i)**0.71)*550/500)/10**5;
+
+display cps;
+
+*cost for batch tray (stainless steel is used in this eq)
+
+cpd(i)$tray(i)      = ((4400*ah(i)**0.38)*550/500)/10**5;
+
+display cpd;
+
+*cost for cyclones (carbon steel is used in this eq)
+
+cpc(i)$cyclone(i)   = (exp(9.2227-(0.7892*log(gasflow(i)))+(0.08487*log(gasflow(i))**2))*550/500)/10**5;
+
+display cpc;
+
+*cost for gyratory crushers (includes motor and drive, and did not specific material used)
+
+cpg(i)$gyratory(i)  = ((10500*sfeed(i)**0.6)*550/500)/10**5;
+
+display cpg;
+
+*========================================================================================================
+
+positive variable
+    mass(i)     mass of equipment i (kg)
+    Tm(sec)     total mass of that section sec (kg)
+    Tn(te)      total materials used
+    cpv(i)      equipment cost of vessel ($ per 10^5)
+    cpf(i)      cost for fired heater ($ per 10^5)
+    cpt(i)      total cost of distillation column ($ per 10^5)
+    ccomp(i)    cost of compressors ($ per 10^5)
+    cpump(i)    total cost pump ($ per 10^5)
+    cph(i)      cost for heat ex ($ per 10^5)
+    cpr(i)      cost for reactor ($ per 10^5)
+    w(i)        weight of equipment (lb)
+    cvv(i)      cost for pressure vessel and tower for distillation absorption and stripping
+    cpp(i)      pump cost exclude motor
+    CP(i)       equipment cost ($ per 10^5)
+    
+Integer variable
+    guess(sec)  first guess area for 7 sections(m^2);
+    
+variable
+    wei         objective weight variable;
+    
+binary variable
+    zz(i,te)      1 if material te is selected for equipment i
+    bi(sec)       test
+    wd(st,sec)    weight decision for structure;
+    
+equation
+    masc        'mass costaints'
+    mat         'material constaints'
+    mat1        'material constaints'
+    mat2        'material constaints'
+    mat3        'material constaints'
+    mat4        'material constaints'
+    num         'number of materials used'
+    totalmass   'section mass'
+    test        'test av weight'
+    test1       'test av weight'
+    weighte     'weight of equipment'
+    costv       'base cost of horizontal vessel'
+    costhv      'base cost of vertical vessel'
+    cvessel     'cost of vessel'
+    cvessel2    'cost of vessel'
+    cheat       'cost of heater'
+    cheat2      'cost of heater'
+    cdis        'cost of distillation column'
+    ccompress   'cost of compressors'
+    ccompress2  'cost of compressors'
+    cmotor      'cost of motor in pump'
+    cmotor2     'cost of motor in pump'
+    tcpump      'total cost of pump'
+    cheatx      'cost of heat ex'
+    cheatx2     'cost of heat ex'
+    creac       'cost of reactor'
+    cequip      'cost of each equipments'
+    obj         'objective function';
+    
+masc(i)             .. mass(i) =e= sum(te, p(te)*vol(i)*zz(i,te));
+
+mat(i)              .. sum(te, zz(i,te)) =e= 1;
+
+mat1(i)$screener(i) .. sum(te$(ord(te)=6), zz(i,te)) =e= 1;
+
+mat2(i)$tray(i)     .. sum(te$(ord(te)=7), zz(i,te)) =e= 1;
+
+mat3(i)$cyclone(i)  .. sum(te$(ord(te)=6), zz(i,te)) =e= 1;
+
+mat4(i)$gyratory(i) .. sum(te$(ord(te)=7), zz(i,te)) =e= 1;
+
+num(te)             .. Tn(te) =e= sum(i, zz(i,te));
+
+totalmass(sec)      .. Tm(sec) =e= sum(i$group(i,sec), mass(i));
+
+test(sec)           .. Tm(sec) =l= sum(st, wd(st,sec)*capweight(st)*guess(sec))-sum(i$group(i,sec), massf(i));
+
+test1(sec)          .. sum(st, wd(st,sec)) =e= 1;
+
+* for vessel ===================================================================================================================================
+
+weighte(i)$HoAndOrr(i)  .. w(i) =e= sum(te, 3.14*(alpha(i)*39.37+tp(i))*(hita(i)+0.8*alpha(i)*39.37)*tp(i)*p(te)*zz(i,te));
+
+costv(i)$hor(i)     .. cvv(i) =e= exp(8.9552-0.233*log(w(i)+1)+(0.04333*(log(w(i)+1)**2)));
+
+costhv(i)$orr(i)    .. cvv(i) =e= exp(7.0132+0.18255*log(w(i)+1)+(0.02297*(log(w(i)+1)**2)));
+
+cvessel(i,typ)$((ord(typ)=5) and HoAndOrr(i))  .. cpv(i) =e= (sum(te$fm(te,typ), zz(i,te)*(fm(te,typ)*cvv(i)+cpl(i))*(550/500)))/10**5;
+
+cvessel2(i,typ)$((ord(typ)=5) and HoAndOrr(i)) .. sum(te$fm(te,typ), zz(i,te)*fm(te,typ)/fm(te,typ)) =e= 1;  
+
+* for heater ===================================================================================================================================
+
+cheat(i,typ)$((ord(typ)=4) and heater(i))    .. cpf(i) =e= (sum(te$fm(te,typ), fpf(i)*fm(te,typ)*cbf(i)*zz(i,te)*550/500))/10**5;
+
+cheat2(i,typ)$((ord(typ)=4) and heater(i))   .. sum(te$fm(te,typ), zz(i,te)*fm(te,typ)/fm(te,typ)) =e= 1;
+
+* for distillation column ===================================================================================================================================
+
+cdis(i)$dis(i)          .. cpt(i) =e= cpv(i)+ct(i);
+
+* for compressors ===================================================================================================================================
+
+ccompress(i,typ)$((ord(typ)=2) and comp(i))  .. ccomp(i) =e= (sum(te$fm(te,typ), fd*fm(te,typ)*cb(i)*zz(i,te)*550/500))/10**5;
+
+ccompress2(i,typ)$((ord(typ)=2) and comp(i)) .. sum(te$fm(te,typ), zz(i,te)*fm(te,typ)/fm(te,typ)) =e= 1;
+
+* for pump ===================================================================================================================================
+
+cmotor(i,typ)$((ord(typ)=1) and pump(i))     .. cpp(i) =e= sum(te$fm(te,typ), ft*fm(te,typ)*cbp(i)*zz(i,te)*(550/500));
+
+cmotor2(i,typ)$((ord(typ)=1) and pump(i))    .. sum(te$fm(te,typ), zz(i,te)*fm(te,typ)/fm(te,typ)) =e= 1;
+
+tcpump(i)$pump(i)       .. cpump(i) =e= (cpp(i)+cpm(i))/10**5;
+
+* for heat ex ===================================================================================================================================
+
+cheatx(i,typ)$((ord(typ)=3) and heatex(i))   .. cph(i) =e= (sum(te$fm(te,typ), fp(i)*fm(te,typ)*cbh(i)*zz(i,te)*(550/500)))/10**5;
+
+cheatx2(i,typ)$((ord(typ)=3) and heatex(i))  .. sum(te$fm(te,typ), zz(i,te)*fm(te,typ)/fm(te,typ)) =e= 1;
+
+* for reactor ===================================================================================================================================
+
+creac(i)$reactor(i) .. cpr(i) =e= (cpv(i)+cpa(i))*550/500;
+
+* for each equipments ===================================================================================================================================
+
+cequip(i)           .. CP(i) =e= cpv(i)+cpf(i)+cpt(i)+ccomp(i)+cpump(i)+cph(i)+cpr(i)+cps(i)+cpd(i)+cpc(i)+cpg(i);
+
+*====================================================================================================================================================
+
+obj                 .. wei =e= sum(i, CP(i))+(sum((st,sec), wd(st,sec)*costst(st)*guess(sec))/10**5);
+
+wei.lo=0;
+
+option limrow = 500;
+
+model weight /masc,
+              mat,
+              mat1,
+              mat2,
+              mat3,
+              mat4,
+              num,
+              totalmass,
+              test,
+              test1,
+              weighte,
+              costv,
+              costhv,
+              cvessel,
+              cvessel2,
+              cheat,
+              cheat2,
+              cdis,
+              ccompress,
+              ccompress2,
+              cmotor,
+              cmotor2,
+              tcpump,
+              cheatx,
+              cheatx2,
+              creac,
+              cequip,
+              obj/      ;
+
+solve weight using minlp minimizing wei;
+
+display zz.l, Tn.l, mass.l, Tm.l, wei.l, cvv.l, cpv.l, cpf.l, cpt.l, ccomp.l, cpump.l, cph.l;
+
+parameter Mmax(sec) maximun mass of that section;
+
+Mmax(sec)=smax(i$group(i,sec),mass.l(i)+massf(i));
+
+display Mmax;
+
+*Multi-floor process plant layout model =================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+
+Parameter pre(IP)       'IP value' /i8 8, i10 10, i11 11, i14 14, i15 15, i23 23, i24 24, i37 37, i40 40, i41 41, i45 45, i46 46, i54 54, i56 56/
+          wax(i,sec)    'test for heavy weight'
+          haz(sec)      'section that has hazadous equipment' /sec2*sec7 1/;
+          
+scalar Kn 'total of k';
+          
+Kn = card(k);
+
+wax(i,sec)$((mass.l(i)+massf(i)=Mmax(sec))and(group(i,sec)))=1;
+
+display wax;
+
+table f(i,j) flow relationship between item i and j
+            i1  i2  i3  i4  i5  i6  i7  i8  i9  i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41 i42 i43 i44 i45 i46 i47 i48 i49 i50 i51 i52 i53 i54 i55 i56 i57
+    i1          1
+    i2              1
+    i3                  1
+    i4                      1
+    i5                          1
+    i6                  1           1
+    i7                                  
+    i8                                      1                                                                      
+    i9                                          1                                                                            
+    i10                                             1                                                                           
+    i11                                                                                         1
+    i12                                     1
+    i13                                                         1
+    i14                                                                 1
+    i15                                                         1
+    i16                                                                         1
+    i17
+    i18                                                                                 1
+    i19                                                             1
+    i20
+    i21                                                                                                 1
+    i22                                                                                     1
+    i23                                                 
+    i24                                                                                                     1   1                           
+    i25                                                                                             1
+    i26                                                                                     1
+    i27                                                                                                                                                 
+    i28                                                                                                                                                            
+    i29
+    i30                                                                                                                                                                     
+    i31                                                                                                                                                                                                             
+    i32                                                                                                                                                                                                                 
+    i33                                                                                                                                             1
+    i34                                                                                                                                             1
+    i35                                                                                                                         1   1
+    i36                                                                                                                                                     1
+    i37                                                                                                                                                             1
+    i38                                                                                                                                                                                 
+    i39                                                                                                                                                         1
+    i40                                                                                                                                                                                                 
+    i41                                                                                                                                                                 1       1
+    i42                                                                                                                                                                             1
+    i43                                                                                                                                                         
+    i44                                                                                                                                                                                     1
+    i45                                                                                                                                                                                         1
+    i46                                                                                                                                                                                             1
+    i47                                                                                                                                                                                                                                     
+    i48                                                                                                                                                                                                     1
+    i49                                                                                                                                                                                                                                     1
+    i50                                                                                                                                                                                                                         1
+    i51                                                                                                                                                                                                                             1
+    i52
+    i53                                                                                                                                                                                                         1       1
+    i54                                                                                                                                                                                                                     1
+    i55                                                                                                                                                                                                                                 1
+    i56                                                                                                                                                                             
+    i57                                                                                                                                                                                                                     1
+        
+table Cc(i,j) connection costs ($ per ft)
+            i1      i2      i3      i4      i5      i6      i7      i8      i9      i10     i11     i12     i13     i14     i15     i16     i17     i18     i19     i20     i21     i22     i23     i24     i25     i26     i27     i28     i29     i30     i31     i32     i33     i34     i35     i36     i37     i38     i39     i40     i41     i42     i43     i44     i45     i46     i47     i48     i49     i50     i51     i52     i53     i54     i55     i56     i57                    
+    i1              115
+    i2                      123
+    i3                              159      
+    i4                                      159                
+    i5                                              159                      
+    i6                              159                     159                                                 
+    i7                                                               77    
+    i8                                                                      159
+    i9                                                                              159
+    i10                                                                                     159
+    i11                                                                                                                                                                             24
+    i12                                                                     1787
+    i13                                                                                                             1361
+    i14                                                                                                                             74
+    i15                                                                                                             22
+    i16                                                                                                                                             4569        
+    i17
+    i18                                                                                                                                                             3981
+    i19                                                                                                                     159
+    i20
+    i21                                                                                                                                                                                             3387
+    i22                                                                                                                                                     24              3812
+    i23                                                                                             9052    2466
+    i24                                                                                                                                                                                                     2884    159                                                     65
+    i25                                                                                                                                                                                     2210
+    i26                                                                                                                                                                     159
+    i27                                                                                                                                                                                                                                                                                             105
+    i28                                                                                                                                                                                                                                                             59                                                      59
+    i29
+    i30                                                                                                                                                                                                                                                                                                                                     654
+    i31                                                                                                                                                                                                                            64                                                                                                                                                                                       17
+    i32                                                                                                                                                                                                                     59              49                                                                                                                                                                                      49
+    i33                                                                                                                                                                                                                                                                                     65
+    i34                                                                                                                                                                                                                                                                                     78
+    i35                                                                                                                                                                                                                                             63      64
+    i36                                                                                                                                                                                                                                                                                                     161
+    i37                                                                                                                                                                                                                                                                                                                     251
+    i38                                                                                                                                                                                                                                                                                                                                                             73
+    i39                                                                                                                                                                                                                     70                                                                                      478
+    i40                                                                                                                                                                                                                                                                                                                                                                                             102
+    i41                                                                                                                                                                                                                                                                                                                             175             72
+    i42                                                                                                                                                                                                                                                                                                                                                     55
+    i43                                                                                                                                                                                                                                                                                                             57
+    i44                                                                                                                                                                                                                                                                                                                                                                     111
+    i45                                                                                                                                                                                                                                                                                                                                                                             44
+    i46                                                                                                                                                                                                                                                                                                                                                                                     16
+    i47                                                                                                                                                                                                                                                                                                                                                                                                                                                                     16
+    i48                                                                                                                                                                                                                                                                                                                                                                                                     147
+    i49                                                                                                                                                                                                                                                                                                                                                                                                                                                                     85
+    i50                                                                                                                                                                                                                                                                                                                                                                                                                                             104
+    i51                                                                                                                                                                                                                                                                                                                                                                                                                                                     88
+    i52
+    i53                                                                                                                                                                                                                                                                                                                                                                                                             82              49
+    i54                                                                                                                                                                                                                                                             49                                                                                                                                                                       49
+    i55                                                                                                                                                                                                                                                                                                                                                                                                                                                             68
+    i56                                                                                                                                                                                                                                                                                                                                                     19
+    i57                                                                                                                                                                                                                                                                                                                                                                                                                                      82                        ;                                                                                                                                
+
+table Cv(i,j)   vertical cost ($ per m yr)
+             i1      i2      i3      i4      i5      i6      i7      i8      i9      i10     i11     i12     i13     i14     i15     i16     i17     i18     i19     i20     i21     i22     i23     i24     i25     i26     i27     i28     i29     i30     i31     i32     i33     i34     i35     i36     i37     i38     i39     i40     i41     i42     i43     i44     i45     i46     i47     i48     i49     i50     i51     i52     i53     i54     i55     i56     i57                    
+    i1               42
+    i2                       42
+    i3                               78566      
+    i4                                       58635                
+    i5                                               58635                      
+    i6                               42728                   15907                                                 
+    i7                                                               159076     
+    i8                                                                       164
+    i9                                                                               164
+    i10                                                                                      164
+    i11                                                                                                                                                                              1810
+    i12                                                                      15907
+    i13                                                                                                              38030
+    i14                                                                                                                              39840
+    i15                                                                                                              1810
+    i16                                                                                                                                              39677        
+    i17
+    i18                                                                                                                                                              39677
+    i19                                                                                                                      1810
+    i20
+    i21                                                                                                                                                                                              108572
+    i22                                                                                                                                                      1810            30004
+    i23                                                                                              15907   3445
+    i24                                                                                                                                                                                                      33916   78566                                                   10653
+    i25                                                                                                                                                                                      33916
+    i26                                                                                                                                                                      78566
+    i27                                                                                                                                                                                                                                                                                              10697
+    i28                                                                                                                                                                                                                              3573                                                                                    3562
+    i29
+    i30                                                                                                                                                                                                                                                                                                                                      10697
+    i31                                                                                                                                                                                                                              5348                                                                                                                                                                                    224
+    i32                                                                                                                                                                                                                      3573            224                                                                                                                                                                                     224
+    i33                                                                                                                                                                                                                                                                                      10653
+    i34                                                                                                                                                                                                                                                                                      43
+    i35                                                                                                                                                                                                                                              5348    5348
+    i36                                                                                                                                                                                                                                                                                                      10696
+    i37                                                                                                                                                                                                                                                                                                                      10697
+    i38                                                                                                                                                                                                                                                                                                                                                              4838
+    i39                                                                                                                                                                                                                      3562                                                                                    5348
+    i40                                                                                                                                                                                                                                                                                                                                                                                              25
+    i41                                                                                                                                                                                                                                                                                                                              1574            9123
+    i42                                                                                                                                                                                                                                                                                                                                                      4424
+    i43                                                                                                                                                                                                                                                                                                              4838
+    i44                                                                                                                                                                                                                                                                                                                                                                      4838
+    i45                                                                                                                                                                                                                                                                                                                                                                              2532
+    i46                                                                                                                                                                                                                                                                                                                                                                                      397
+    i47                                                                                                                                                                                                                                                                                                                                                                                                                                                                      397
+    i48                                                                                                                                                                                                                                                                                                                                                                                                      52
+    i49                                                                                                                                                                                                                                                                                                                                                                                                                                                                      52
+    i50                                                                                                                                                                                                                                                                                                                                                                                                                                              449
+    i51                                                                                                                                                                                                                                                                                                                                                                                                                                                      449
+    i52
+    i53                                                                                                                                                                                                                                                                                                                                                                                                              449             224
+    i54                                                                                                                                                                                                                                                              224                                                                                                                                                                      224
+    i55                                                                                                                                                                                                                                                                                                                                                                                                                                                              449
+    i56                                                                                                                                                                                                                                                                                                                                                      414
+    i57                                                                                                                                                                                                                                                                                                                                                                                                                                       449                        ;  
+
+parameter
+    Ch(i,j)   horizontal cost ($ per m yr);
+    
+Ch(i,j) = Cv(i,j)/10;
+
+display Ch;
+
+parameter
+    Xbar(s)         candidate x coordinate /s1 15, s2 30, s3 15, s4 10, s5 10, s6 20, s7 20/
+    ybar(s)         candidate y coordinare /s1 10, s2 20, s3 30, s4 30, s5 10, s6 20, s7 25/
+    AR(s)           candidate area;
+    
+AR(s) = xbar(s)*ybar(s);
+
+Scalar
+    FC1             building factory cost ($ per m2) /218/
+    LC              land cost ($ per m2)  /676/;          
+
+parameter M(sec)      upper bound
+          H(sec)      floor height
+          FC2(sec)    area dependent floor construction cost ;
+          
+H(sec) = smax(i$group(i,sec), hita(i))+1;
+
+FC2(sec) = sum(st, wd.l(st,sec)*costst(st));
+
+display AR, Kn, H, FC2;
+
+BINARY VARIABLES     
+    V(i,sec,k)      'item i is assigned to floor k'
+    Z(i,j,sec)      'i and j are allocated to the same floor'
+    O(i)            'rotation'
+    Ea(i,j)         'non1'
+    Eb(i,j)         'non2'
+    QS(s,sec)       'binary variable for linearity'
+    Wx(i,j)         '1 if i is right of j'
+    Wy(i,j)         '1 if i is above of j'
+    OO(sec)         'orientation of s'
+    Eaa(sec,secx)   'non s 1'
+    Ebb(sec,secx)   'non s 2';
+    
+integer variables
+    NF(sec)         'number of floor';
+    
+positive variables
+    l(i)            'length of item i'
+    d(i)            'depth of dimension i'
+    vmainx(i)       'maintenance spacing on x coordinate'
+    vmainy(i)       'maintenance spacing on y coordinate'
+    x(i,sec)        'coordinates of geometrical x centre of item i'
+    y(i,sec)        'coordinates of geometrical y centre of item i'
+    R(i,j,sec)      'relative distance in x coordinates between items i and j, if i is to right of j'
+    Le(i,j,sec)     'relative distance in x coordinates between items i and j, if i is to left of j'
+    A(i,j,sec)      'relative distance in y coordinates between items i and j, if i above j'
+    B(i,j,sec)      'relative distance in y coordinates between items i and j, if i below j'
+    U(i,j,sec)      'relative distance in z coordinates between items i and j, if i is higher than j'
+    De(i,j,sec)     'relative distance in z coordinates between items i and j, if i is lower than j'
+    Xmax(sec)       'dimension of floor area on x axis'
+    Ymax(sec)       'dimension of floor area on y axis'
+    NQ(s,sec)       'new variable'
+    ll(sec)         'length of s'
+    dd(sec)         'delth of s'
+    xxx(sec)        'x coordinate of s'
+    yyy(sec)        'y coordinate of s'
+    RR(sec,secx)    'Relative distance r'
+    Lee(sec,secx)   'relative distance l'
+    AA(sec,secx)    'relative distance a'
+    BB(sec,secx)    'relative distance b';
+    
+    
+variables    
+    TD(i,j,sec)     'total rectilinear distance between items i and j'
+    TDD(sec,secx)   'total rectilinear distance between s'
+    FA(sec)         'floor area'
+    xxxmax          'maximux x for s'
+    yyymax          'maximum y for s'
+    FAs             'area of s'
+    Qs1             'obj for section1'
+    Qs2             'obj for section2'
+    Qs3             'obj for section3'
+    Qs4             'obj for section4'
+    Qs5             'obj for section5'
+    Qs6             'obj for section6'
+    Qs7             'obj for section7'
+    QQ              'obj for s';
+    
+*safety part
+
+Parameter
+    F1(IP)          'general process hazards factor of item i' /i8 1.75, i10 1.75, i11 1.75, i14 1.35, i15 1.35, i23 1.35, i24 1.35, i37 1.35, i40 1.35, i41 1.35, i45 1.35, i46 1.35, i54 1.35, i56 1.35/
+    F2(IP)          'special process hazards factor of item i' /i8 1.83, i10 2.61, i11 2.61, i14 2.62, i15 2.62, i23 2.63, i24 2.63, i37 3.41, i40 2.89, i41 2.97, i45 2.65, i46 2.61, i54 3.04, i56 2.57/
+    F3(IP)          'process unit hazards factor of item i'
+    Fi(IP)          'fire and explosion index of item i'
+    MF(IP)          'material factor of item i' /i8 21, i10 21, i11 21, i14 21, i15 21, i23 24, i24 24, i37 21, i40 21, i41 21, i45 16, i46 16, i54 16, i56 21/
+    Dei(IP)         'the distance of exposure i'  
+    DF(IP)          'damage factor' /i8 0.6, i10 0.7, i11 0.7, i14 0.63, i15 0.63, i23 0.7, i24 0.7, i37 0.7, i40 0.65, i41 0.66, i45 0.43, i46 0.42, i54 0.46, i56 0.62/
+    UU              'appropriate upper bound for safety'
+    Mm              'appropriate upper bound for aoe eq'
+    mainx(i)        'maintanance distance x axis'
+    mainy(i)        'maintanance distance y axis'
+    ss              'upper bound of s';
+        
+F3(IP)  = F1(IP)*F2(IP);
+Fi(IP)  = F3(IP)*MF(IP);
+Dei(IP) = 0.256*Fi(IP);
+
+UU(IP)  = sum( i, CP.l(i))*DF(IP);
+Mm      = sum( IP, Dei(IP));
+mainx(i)$reactor(i)   = 4;
+mainy(i)$reactor(i)   = 4;
+mainx(i)$HoAndOrr(i)  = hita(i);
+mainy(i)$HoAndOrr(i)  = hita(i);
+mainx(i)$comp(i)      = 0.8;
+mainy(i)$comp(i)      = 0.8;
+mainx(i)$pump(i)      = 0.8;
+mainy(i)$pump(i)      = 0.8;
+mainx(i)$heatex(i)    = 0.5;
+mainy(i)$heatex(i)    = beta(i)+1.5;
+mainx(i)$heater(i)    = 3;
+mainy(i)$heater(i)    = beta(i)+15;
+mainx(i)$screener(i)  = 1;
+mainy(i)$screener(i)  = 1;
+mainx(i)$tray(i)      = 1;
+mainy(i)$tray(i)      = 1;
+mainx(i)$cyclone(i)   = 1;
+mainy(i)$cyclone(i)   = 1;
+mainx(i)$gyratory(i)  = 1;
+mainy(i)$gyratory(i)  = 1;
+M(sec)  = max(sum( i, (alpha(i)+mainx(i))*ord(sec)), sum( i, (beta(i)+mainy(i))*ord(sec)));
+
+display UU, Dei, mainx, mainy, M;
+
+table grammar(IP,Ki) loss control credit factor
+                K1      K2      K3      K4      K5      K6
+        i8      0.9     0.75    0.405   0.365   0.194   0.117
+        i10     0.9     0.75    0.405   0.365   0.194   0.117 
+        i11     0.9     0.75    0.405   0.365   0.194   0.117 
+        i14     0.9     0.75    0.405   0.365   0.194   0.117
+        i15     0.9     0.75    0.405   0.365   0.194   0.117
+        i23     1       0.9     0.76    0.68    0.517   0.465
+        i24     1       0.9     0.76    0.68    0.517   0.465
+        i37     0.9     0.75    0.405   0.365   0.194   0.117
+        i40     1       0.9     0.76    0.68    0.517   0.465
+        i41     1       0.9     0.76    0.68    0.517   0.465
+        i45     1       0.9     0.76    0.68    0.517   0.465
+        i46     1       0.9     0.76    0.68    0.517   0.465
+        i54     0.9     0.75    0.405   0.365   0.194   0.117
+        i56     1       0.9     0.76    0.68    0.517   0.465 ;
+        
+table Pik(IP,Ki) protection device cost
+                K1      K2      K3      K4      K5      K6
+        i8      5000    15000   35000   40000   90000   125000        
+        i10     5000    15000   35000   40000   90000   125000         
+        i11     5000    15000   35000   40000   90000   125000
+        i14     5000    15000   35000   40000   90000   125000
+        i15     5000    15000   35000   40000   90000   125000
+        i23             5000    20000   30000   50000   55000
+        i24             5000    20000   30000   50000   55000
+        i37     5000    15000   35000   40000   90000   125000
+        i40             5000    20000   30000   50000   55000
+        i41             5000    20000   30000   50000   55000
+        i45             5000    20000   30000   50000   55000
+        i46             5000    20000   30000   50000   55000
+        i54     5000    15000   35000   40000   90000   125000
+        i56             5000    20000   30000   50000   55000   ;
+
+Variables
+        ohmz(IP)        'base maximum probable property damage cost'
+        ohm(IP)         'actual probable property damage cost';
+        
+Positive variable
+        QZ(i,Ki)        'new variable for safety'
+        Ve(i)           'value of the area of explosure of i'
+        Din(i,j,sec)    'total rectilinear distance between items i and j if Din is smaller than Dei'
+        Dout(i,j,sec)   'total rectilinear distance between items i and j if Din is larger than Dei';
+        
+Binary variable
+        Yy(IP,j)        '1 if j is allocated within the area of exposure of i'
+        Zik(IP,Ki)      '1 if protection device is equipped'
+        Wx(i,j)         '1 if i is right of j'
+        Wy(i,j)         '1 if i is above of j'
+        Wz(i,j)         '1 if i upper than j'
+        Wxx(sec,secx)   '1 if sec is right of secx'
+        Wyy(sec,secx)   '1 if sec is above of secx' ;
+        
+*section 1 ==================================================================================================================================
+
+equations
+         Floors1          Should be assigned to one floor 
+         Floorrs1         weightest equipment should be assigned to the first floor
+         Floor1s1         floor constraints value of z 
+         Floor2s1         floor constraints value of z 
+         Floor3s1         floor constraints value of z 
+         Numfloors1       number of floor 
+         Orient1s1        equipment orientation constraints length 
+         Orient2s1        equipment orientation constraints depth 
+         maintenance1s1   maintenance spacing required
+         maintenance2s1   maintenance spacing required
+         Non1s1           non overlapping constraints 
+         Non2s1           non overlapping constraints 
+         Non3s1           non overlapping constraints 
+         Non4s1           non overlapping constraints 
+         Distance1s1      distance constraint 
+         Distance2s1      distance constraint 
+         Distance3s1      distance constraint 
+         Distance4s1      distance constraint 
+         distance11s1     absolute distance constraints
+         distance12s1     absolute distance constraints 
+         distance13s1     absolute distance constraints
+         distance14s1     absolute distance constraints 
+         distance15ps1    absolute distance constraints
+         distance16ps1    absolute distance constraints
+         Coordinate1s1    coordinate constaints 
+         Coordinate2s1    coordinate constaints 
+         Coordinate3s1    coordinate constaints 
+         Coordinate4s1    coordinate constaints 
+         Areals1          plant area linearity 
+         Areals11         lowerbound of section area
+         Qcons1           QS constraint 
+         Xcons1           x constaint 
+         Ycons1           y constaint 
+         news1            linearization constraints 
+         new1s1           linearization constraints 
+         Objls1           objective function linear;
+         
+Floors1(i,sec)$((group(i,sec))and(mass.l(i)+massf(i)<Mmax(sec))and(ord(sec)=1)) ..    sum(k, V(i,sec,k)) =e= 1;
+
+Floorrs1(kt,sec)$((ord(sec)=1)) .. sum(i$(group(i,sec)and(mass.l(i)+massf(i)=Mmax(sec))), V(i,sec,kt)) =g= sum(i$(group(i,sec)),wax(i,sec));
+
+Floor1s1(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=1)) ..   Z(i,j,sec) =g= V(i,sec,k)+V(j,sec,k)-1;
+
+Floor2s1(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=1)) ..    Z(i,j,sec) =l= 1-V(i,sec,k)+V(j,sec,k);
+
+Floor3s1(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=1)) ..    Z(i,j,sec) =l= 1+V(i,sec,k)-V(j,sec,k);
+
+Numfloors1(i,sec)$(group(i,sec)and(ord(sec)=1)) .. NF(sec) =g= sum( k, ord(k)*V(i,sec,k) );
+
+Orient1s1(i,sec)$(group(i,sec) and (ord(sec)=1))      .. l(i) =e= (alpha(i)*O(i))+(beta(i)*(1-O(i)));
+
+Orient2s1(i,sec)$(group(i,sec) and (ord(sec)=1))      .. d(i) =e= alpha(i)+beta(i)-l(i);
+
+maintenance1s1(i,sec)$(group(i,sec) and (ord(sec)=1)) .. vmainx(i) =e= (mainx(i)*O(i))+(mainy(i)*(1-O(i)));
+
+maintenance2s1(i,sec)$(group(i,sec) and (ord(sec)=1)) .. vmainy(i) =e= mainx(i)+mainy(i)-vmainx(i);
+
+Non1s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1))       .. x(i,sec)-x(j,sec)+(M(sec)*(1-Z(i,j,sec)+Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non2s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1))       .. x(j,sec)-x(i,sec)+(M(sec)*(2-Z(i,j,sec)-Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non3s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1))       .. y(i,sec)-y(j,sec)+(M(sec)*(2-Z(i,j,sec)+Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Non4s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1))       .. y(j,sec)-y(i,sec)+(M(sec)*(3-Z(i,j,sec)-Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Distance1s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1) and f(i,j))  .. R(i,j,sec)-Le(i,j,sec) =e= x(i,sec)-x(j,sec);
+
+Distance2s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1) and f(i,j))  .. A(i,j,sec)-B(i,j,sec) =e= y(i,sec)-y(j,sec);
+
+Distance3s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1) and f(i,j))  .. U(i,j,sec)-De(i,j,sec) =e= H(sec)*sum( k, ord(k)*(V(i,sec,k)-V(j,sec,k)));
+
+Distance4s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1) and f(i,j))  .. TD(i,j,sec) =e= R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec)+U(i,j,sec)+De(i,j,sec);
+
+distance11s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1)) .. R(i,j,sec) =l= M(sec)*Wx(i,j);
+
+distance12s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1)) .. Le(i,j,sec) =l= M(sec)*(1-Wx(i,j));
+
+distance13s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1)) .. A(i,j,sec) =l= M(sec)*Wy(i,j);
+
+distance14s1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1)) .. B(i,j,sec) =l= M(sec)*(1-Wy(i,j));
+
+distance15ps1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1)).. U(i,j,sec) =l= M(sec)*Wz(i,j);
+
+distance16ps1(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1)).. De(i,j,sec) =l= M(sec)*(1-Wz(i,j));
+
+Coordinate1s1(i,sec)$(group(i,sec)and(ord(sec)=1))   .. x(i,sec) =g= (l(i)/2)+1;
+
+Coordinate2s1(i,sec)$(group(i,sec)and(ord(sec)=1))   .. y(i,sec) =g= (d(i)/2)+vmainy(i);
+
+Coordinate3s1(i,sec)$(group(i,sec)and(ord(sec)=1))   .. x(i,sec)+(l(i)/2)+vmainx(i) =l= Xmax(sec);
+
+Coordinate4s1(i,sec)$(group(i,sec)and(ord(sec)=1))   .. y(i,sec)+(d(i)/2)+vmainy(i) =l= Ymax(sec);
+
+Areals1(sec)$(ord(sec)=1)  .. FA(sec) =e= sum( s, AR(s)*QS(s,sec));
+
+Areals11(sec)$(ord(sec)=1) .. FA(sec)*NF(sec) =g= guess.l(sec);
+
+Qcons1(sec)$(ord(sec)=1)   .. sum( s, QS(s,sec)) =e= 1;
+
+Xcons1(sec)$(ord(sec)=1)   .. Xmax(sec) =e= sum( s, Xbar(s)*QS(s,sec));
+
+Ycons1(sec)$(ord(sec)=1)   .. Ymax(sec) =e= sum( s, Ybar(s)*QS(s,sec));
+
+news1(s,sec)$(ord(sec)=1)  .. NQ(s,sec) =l= Kn*QS(s,sec);
+
+new1s1(sec)$(ord(sec)=1)   .. NF(sec) =e= sum( s, NQ(s,sec));
+
+Objls1        .. Qs1 =e= sum( (i,j,sec)$((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=1) and f(i,j)), (( Cc(i,j)*TD(i,j,sec)/0.3048)+( Cv(i,j)*De(i,j,sec) )+( Ch(i,j)*(R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec))))/10**5 )+(sum( (s,sec)$(ord(sec)=1), AR(s)*NQ(s,sec)*FC2(sec))/10**5)+(LC*sum(sec$(ord(sec)=1), FA(sec))/10**5) ;
+
+Qs1.lo=0;
+
+Model linearitys1      
+        /Floors1,
+         Floorrs1,
+         Floor1s1,
+         Floor2s1,
+         Floor3s1,
+         Numfloors1,
+         Orient1s1,
+         Orient2s1,
+         maintenance1s1,
+         maintenance2s1,
+         Non1s1,
+         Non2s1,
+         Non3s1,
+         Non4s1,
+         Distance1s1,
+         Distance2s1,
+         Distance3s1,
+         Distance4s1,
+         distance11s1,
+         distance12s1,
+         distance13s1,
+         distance14s1,
+         distance15ps1,
+         distance16ps1,
+         Coordinate1s1,
+         Coordinate2s1,
+         Coordinate3s1,
+         Coordinate4s1,
+         Areals1,
+         Areals11,
+         Qcons1,
+         Xcons1,
+         Ycons1,
+         news1,
+         new1s1,
+         Objls1/;
+
+option limrow = 1000;
+
+solve linearitys1 using minlp minimizing Qs1;
+
+display x.l, y.l, l.l, d.l, V.l, O.l, Qs1.l, Xmax.l, Ymax.l, FA.l ;
+
+*sec 2 =======================================================================================================
+        
+equations
+         Floors2          Should be assigned to one floor 
+         Floorrs2         test
+         Floor1s2         floor constraints value of z 
+         Floor2s2         floor constraints value of z 
+         Floor3s2         floor constraints value of z 
+         Numfloors2       number of floor 
+         Orient1s2        equipment orientation constraints length 
+         Orient2s2        equipment orientation constraints depth 
+         maintenance1s2   maintenance spacing required
+         maintenance2s2   maintenance spacing required
+         Non1s2           non overlapping constraints 
+         Non2s2           non overlapping constraints 
+         Non3s2           non overlapping constraints 
+         Non4s2           non overlapping constraints 
+         Distance1s2      distance constraint 
+         Distance2s2      distance constraint 
+         Distance3s2      distance constraint 
+         Distance4s2      distance constraint 
+         distance11s2     absolute distance constraints 
+         distance12s2     absolute distance constraints 
+         distance13s2     absolute distance constraints 
+         distance14s2     absolute distance constraints 
+         distance15ps2    absolute distance constraints
+         distance16ps2    absolute distance constraints
+         distancef1s2     distance constaints
+         Coordinate1s2    coordinate constaints 
+         Coordinate2s2    coordinate constaints 
+         Coordinate3s2    coordinate constaints 
+         Coordinate4s2    coordinate constaints 
+         Areals2          plant area linearity 
+         Areals21         lower bound of area
+         Qcons2           QS constraint 
+         Xcons2           x constaint 
+         Ycons2           y constaint 
+         news2            linearization constraints 
+         new1s2           linearization constraints 
+         Objls2           objective function linear
+         aoes2            area of exposure constaint
+         aoe1s2           area of exposure constaint
+         aoe2s2           area of exposure constaint
+         aoe3s2           area of exposure constaint
+         values2          the value of exposure
+         maxxs2           maximum probable property damage constaint
+         max1s2           Actual probable property damage constaint
+         max2s2           one configuration can be installed per pertinent process unit;
+         
+Floors2(i,sec)$((group(i,sec))and(mass.l(i)+massf(i)<Mmax(sec))and(ord(sec)=2)) ..    sum(k, V(i,sec,k)) =e= 1;
+
+Floorrs2(kt,sec)$((ord(sec)=2)) .. sum(i$(group(i,sec)and(mass.l(i)+massf(i)=Mmax(sec))), V(i,sec,kt)) =g= sum(i$(group(i,sec)),wax(i,sec));
+
+Floor1s2(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=2)) ..   Z(i,j,sec) =g= V(i,sec,k)+V(j,sec,k)-1;
+
+Floor2s2(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=2)) ..    Z(i,j,sec) =l= 1-V(i,sec,k)+V(j,sec,k);
+
+Floor3s2(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=2)) ..    Z(i,j,sec) =l= 1+V(i,sec,k)-V(j,sec,k);
+
+Numfloors2(i,sec)$(group(i,sec)and(ord(sec)=2)) .. NF(sec) =g= sum( k, ord(k)*V(i,sec,k) );
+
+Orient1s2(i,sec)$(group(i,sec) and (ord(sec)=2))      .. l(i) =e= (alpha(i)*O(i))+(beta(i)*(1-O(i)));
+
+Orient2s2(i,sec)$(group(i,sec) and (ord(sec)=2))      .. d(i) =e= alpha(i)+beta(i)-l(i);
+
+maintenance1s2(i,sec)$(group(i,sec) and (ord(sec)=2)) .. vmainx(i) =e= (mainx(i)*O(i))+(mainy(i)*(1-O(i)));
+
+maintenance2s2(i,sec)$(group(i,sec) and (ord(sec)=2)) .. vmainy(i) =e= mainx(i)+mainy(i)-vmainx(i);
+
+Non1s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2))       .. x(i,sec)-x(j,sec)+(M(sec)*(1-Z(i,j,sec)+Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non2s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2))       .. x(j,sec)-x(i,sec)+(M(sec)*(2-Z(i,j,sec)-Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non3s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2))       .. y(i,sec)-y(j,sec)+(M(sec)*(2-Z(i,j,sec)+Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Non4s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2))       .. y(j,sec)-y(i,sec)+(M(sec)*(3-Z(i,j,sec)-Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Distance1s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2) and f(i,j))  .. R(i,j,sec)-Le(i,j,sec) =e= x(i,sec)-x(j,sec);
+
+Distance2s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2) and f(i,j))  .. A(i,j,sec)-B(i,j,sec) =e= y(i,sec)-y(j,sec);
+
+Distance3s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2) and f(i,j))  .. U(i,j,sec)-De(i,j,sec) =e= H(sec)*sum( k, ord(k)*(V(i,sec,k)-V(j,sec,k)));
+
+Distance4s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2) and f(i,j))  .. TD(i,j,sec) =e= R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec)+U(i,j,sec)+De(i,j,sec);
+
+distance11s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2)) .. R(i,j,sec) =l= M(sec)*Wx(i,j);
+
+distance12s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2)) .. Le(i,j,sec) =l= M(sec)*(1-Wx(i,j));
+
+distance13s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2)) .. A(i,j,sec) =l= M(sec)*Wy(i,j);
+
+distance14s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2)) .. B(i,j,sec) =l= M(sec)*(1-Wy(i,j));
+
+distance15ps2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2)).. U(i,j,sec) =l= M(sec)*Wz(i,j);
+
+distance16ps2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2)).. De(i,j,sec) =l= M(sec)*(1-Wz(i,j));
+
+distancef1s2(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2)) .. TD(i,j,sec) =e= TD(j,i,sec);
+
+Coordinate1s2(i,sec)$(group(i,sec)and(ord(sec)=2)) .. x(i,sec) =g= (l(i)/2)+vmainx(i);
+
+Coordinate2s2(i,sec)$(group(i,sec)and(ord(sec)=2)) .. y(i,sec) =g= (d(i)/2)+vmainy(i);
+
+Coordinate3s2(i,sec)$(group(i,sec)and(ord(sec)=2))   .. x(i,sec)+(l(i)/2)+vmainx(i) =l= Xmax(sec);
+
+Coordinate4s2(i,sec)$(group(i,sec)and(ord(sec)=2))   .. y(i,sec)+(d(i)/2)+vmainy(i) =l= Ymax(sec);
+
+aoes2(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=2))   .. TD(IP,j,sec) =e= Din(IP,j,sec) + Dout(IP,j,sec);
+
+aoe1s2(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=2))  .. Din(IP,j,sec) =l= Dei(IP)*Yy(IP,j);
+
+aoe2s2(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=2))  .. Dout(IP,j,sec) =g= Dei(IP)*(1-Yy(IP,j));
+
+aoe3s2(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=2))  .. Dout(IP,j,sec) =l= Mm*(1-Yy(IP,j));
+
+values2(IP,sec)$(group(IP,sec) and (ord(sec)=2))       .. Ve(IP) =e= CP.l(IP)+sum( j$((pre(IP)<>ord(j)) and group(j,sec)), (CP.l(j)*Yy(IP,j))-((CP.l(j)/Dei(IP))*Din(IP,j,sec)));
+
+maxxs2(IP,sec)$(group(IP,sec) and (ord(sec)=2))    .. ohmz(IP) =e= DF(IP)*Ve(IP);
+
+max1s2(IP,sec)$(group(IP,sec) and (ord(sec)=2))    .. ohm(IP) =e= sum( Ki, grammar(IP,Ki)*ohmz(IP)*Zik(IP,Ki));
+
+max2s2(IP,sec)$(group(IP,sec) and (ord(sec)=2))    .. sum( Ki, Zik(IP,Ki)) =e= 1	;
+
+Areals2(sec)$(ord(sec)=2)  .. FA(sec) =e= sum( s, AR(s)*QS(s,sec));
+
+Areals21(sec)$(ord(sec)=2) .. FA(sec)*NF(sec) =g= guess.l(sec);
+
+Qcons2(sec)$(ord(sec)=2)   .. sum( s, QS(s,sec)) =e= 1;
+
+Xcons2(sec)$(ord(sec)=2)   .. Xmax(sec) =e= sum( s, Xbar(s)*QS(s,sec));
+
+Ycons2(sec)$(ord(sec)=2)   .. Ymax(sec) =e= sum( s, Ybar(s)*QS(s,sec));
+
+news2(s,sec)$(ord(sec)=2)  .. NQ(s,sec) =l= Kn*QS(s,sec);
+
+new1s2(sec)$(ord(sec)=2)   .. NF(sec) =e= sum( s, NQ(s,sec));
+
+Objls2        .. Qs2 =e= sum( (i,j,sec)$((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=2) and f(i,j)), (( Cc(i,j)*TD(i,j,sec)/0.3048)+( Cv(i,j)*De(i,j,sec) )+( Ch(i,j)*(R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec))))/10**5 )+(sum((s,sec)$(ord(sec)=2), AR(s)*NQ(s,sec)*FC2(sec))/10**5)+(LC*sum(sec$(ord(sec)=2), FA(sec))/10**5)+ sum( (IP,sec)$(group(IP,sec)and(ord(sec)=2)), ohm(IP)) + sum( (IP,Ki,sec)$(group(IP,sec)and(ord(sec)=2)), Pik(IP,Ki)*Zik(IP,Ki)/10**5) ;
+
+Qs2.lo=0;
+
+Model linearitys2      
+        /Floors2,
+         Floorrs2,
+         Floor1s2,
+         Floor2s2,
+         Floor3s2,
+         Numfloors2,
+         Orient1s2,
+         Orient2s2,
+         maintenance1s2,
+         maintenance2s2,
+         Non1s2,
+         Non2s2,
+         Non3s2,
+         Non4s2,
+         Distance1s2,
+         Distance2s2,
+         Distance3s2,
+         Distance4s2,
+         distance11s2,
+         distance12s2,
+         distance13s2,
+         distance14s2,
+         distance15ps2,
+         distance16ps2,
+         distancef1s2,
+         Coordinate1s2,
+         Coordinate2s2,
+         Coordinate3s2,
+         Coordinate4s2,
+         Areals2,
+         Areals21,
+         Qcons2,
+         Xcons2,
+         Ycons2,
+         news2,
+         new1s2,
+         aoes2,
+         aoe1s2,
+         aoe2s2,
+         aoe3s2,
+         values2,
+         maxxs2,
+         max1s2,
+         max2s2,
+         Objls2/;
+
+option limrow = 1000;
+
+solve linearitys2 using minlp minimizing Qs2;
+
+display x.l, y.l, l.l, d.l, V.l, O.l, Qs2.l, R.l, Le.l, A.l, B.l, TD.l ;
+
+*sec 3 =======================================================================================================
+        
+equations
+         Floors3          Should be assigned to one floor 
+         Floorrs3         test
+         Floor1s3         floor constraints value of z 
+         Floor2s3         floor constraints value of z 
+         Floor3s3         floor constraints value of z 
+         Numfloors3       number of floor 
+         Orient1s3        equipment orientation constraints length 
+         Orient2s3        equipment orientation constraints depth 
+         maintenance1s3   maintenance spacing required
+         maintenance2s3   maintenance spacing required
+         Non1s3           non overlapping constraints 
+         Non2s3           non overlapping constraints 
+         Non3s3           non overlapping constraints 
+         Non4s3           non overlapping constraints 
+         Distance1s3      distance constraint 
+         Distance2s3      distance constraint 
+         Distance3s3      distance constraint 
+         Distance4s3      distance constraint 
+         distance11s3     absolute distance constraints 
+         distance12s3     absolute distance constraints 
+         distance13s3     absolute distance constraints 
+         distance14s3     absolute distance constraints 
+         distance15ps3    absolute distance constraints
+         distance16ps3    absolute distance constraints
+         distancef1s3     distance constaints
+         Coordinate1s3    coordinate constaints 
+         Coordinate2s3    coordinate constaints 
+         Coordinate3s3    coordinate constaints 
+         Coordinate4s3    coordinate constaints 
+         Areals3          plant area linearity 
+         Areals31         lower bound of section area
+         Qcons3           QS constraint 
+         Xcons3           x constaint 
+         Ycons3           y constaint 
+         news3            linearization constraints 
+         new1s3           linearization constraints 
+         Objls3           objective function linear
+         aoes3            area of exposure constaint
+         aoe1s3           area of exposure constaint
+         aoe2s3           area of exposure constaint
+         aoe3s3           area of exposure constaint
+         values3          the value of exposure
+         maxxs3           maximum probable property damage constaint
+         max1s3           Actual probable property damage constaint
+         max2s3           one configuration can be installed per pertinent process unit;
+         
+Floors3(i,sec)$((group(i,sec))and(mass.l(i)+massf(i)<Mmax(sec))and(ord(sec)=3)) ..    sum(k, V(i,sec,k)) =e= 1;
+
+Floorrs3(kt,sec)$((ord(sec)=3)) .. sum(i$(group(i,sec)and(mass.l(i)+massf(i)=Mmax(sec))), V(i,sec,kt)) =g= sum(i$(group(i,sec)),wax(i,sec));
+
+Floor1s3(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=3)) ..   Z(i,j,sec) =g= V(i,sec,k)+V(j,sec,k)-1;
+
+Floor2s3(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=3)) ..    Z(i,j,sec) =l= 1-V(i,sec,k)+V(j,sec,k);
+
+Floor3s3(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=3)) ..    Z(i,j,sec) =l= 1+V(i,sec,k)-V(j,sec,k);
+
+Numfloors3(i,sec)$(group(i,sec)and(ord(sec)=3)) .. NF(sec) =g= sum( k, ord(k)*V(i,sec,k) );
+
+Orient1s3(i,sec)$(group(i,sec) and (ord(sec)=3))      .. l(i) =e= (alpha(i)*O(i))+(beta(i)*(1-O(i)));
+
+Orient2s3(i,sec)$(group(i,sec) and (ord(sec)=3))      .. d(i) =e= alpha(i)+beta(i)-l(i);
+
+maintenance1s3(i,sec)$(group(i,sec) and (ord(sec)=3)) .. vmainx(i) =e= (mainx(i)*O(i))+(mainy(i)*(1-O(i)));
+
+maintenance2s3(i,sec)$(group(i,sec) and (ord(sec)=3)) .. vmainy(i) =e= mainx(i)+mainy(i)-vmainx(i);
+
+Non1s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3))       .. x(i,sec)-x(j,sec)+(M(sec)*(1-Z(i,j,sec)+Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non2s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3))       .. x(j,sec)-x(i,sec)+(M(sec)*(2-Z(i,j,sec)-Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non3s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3))       .. y(i,sec)-y(j,sec)+(M(sec)*(2-Z(i,j,sec)+Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Non4s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3))       .. y(j,sec)-y(i,sec)+(M(sec)*(3-Z(i,j,sec)-Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Distance1s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3) and f(i,j))  .. R(i,j,sec)-Le(i,j,sec) =e= x(i,sec)-x(j,sec);
+
+Distance2s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3) and f(i,j))  .. A(i,j,sec)-B(i,j,sec) =e= y(i,sec)-y(j,sec);
+
+Distance3s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3) and f(i,j))  .. U(i,j,sec)-De(i,j,sec) =e= H(sec)*sum( k, ord(k)*(V(i,sec,k)-V(j,sec,k)));
+
+Distance4s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3) and f(i,j))  .. TD(i,j,sec) =e= R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec)+U(i,j,sec)+De(i,j,sec);
+
+distance11s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3)) .. R(i,j,sec) =l= M(sec)*Wx(i,j);
+
+distance12s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3)) .. Le(i,j,sec) =l= M(sec)*(1-Wx(i,j));
+
+distance13s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3)) .. A(i,j,sec) =l= M(sec)*Wy(i,j);
+
+distance14s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3)) .. B(i,j,sec) =l= M(sec)*(1-Wy(i,j));
+
+distance15ps3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3)).. U(i,j,sec) =l= M(sec)*Wz(i,j);
+
+distance16ps3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3)).. De(i,j,sec) =l= M(sec)*(1-Wz(i,j));
+
+distancef1s3(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3)) .. TD(i,j,sec) =e= TD(j,i,sec);
+
+Coordinate1s3(i,sec)$(group(i,sec)and(ord(sec)=3)) .. x(i,sec) =g= (l(i)/2)+1;
+
+Coordinate2s3(i,sec)$(group(i,sec)and(ord(sec)=3)) .. y(i,sec) =g= (d(i)/2)+vmainy(i);
+
+Coordinate3s3(i,sec)$(group(i,sec)and(ord(sec)=3))   .. x(i,sec)+(l(i)/2)+vmainx(i) =l= Xmax(sec);
+
+Coordinate4s3(i,sec)$(group(i,sec)and(ord(sec)=3))   .. y(i,sec)+(d(i)/2)+vmainy(i) =l= Ymax(sec);
+
+aoes3(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=3))   .. TD(IP,j,sec) =e= Din(IP,j,sec) + Dout(IP,j,sec);
+
+aoe1s3(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=3))  .. Din(IP,j,sec) =l= Dei(IP)*Yy(IP,j);
+
+aoe2s3(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=3))  .. Dout(IP,j,sec) =g= Dei(IP)*(1-Yy(IP,j));
+
+aoe3s3(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=3))  .. Dout(IP,j,sec) =l= Mm*(1-Yy(IP,j));
+
+values3(IP,sec)$(group(IP,sec) and (ord(sec)=3))       .. Ve(IP) =e= CP.l(IP)+sum( j$((pre(IP)<>ord(j)) and group(j,sec)), (CP.l(j)*Yy(IP,j))-((CP.l(j)/Dei(IP))*Din(IP,j,sec)));
+
+maxxs3(IP,sec)$(group(IP,sec) and (ord(sec)=3))    .. ohmz(IP) =e= DF(IP)*Ve(IP);
+
+max1s3(IP,sec)$(group(IP,sec) and (ord(sec)=3))    .. ohm(IP) =e= sum( Ki, grammar(IP,Ki)*ohmz(IP)*Zik(IP,Ki));
+
+max2s3(IP,sec)$(group(IP,sec) and (ord(sec)=3))    .. sum( Ki, Zik(IP,Ki)) =e= 1	;
+
+Areals3(sec)$(ord(sec)=3)  .. FA(sec) =e= sum( s, AR(s)*QS(s,sec));
+
+Areals31(sec)$(ord(sec)=3) .. FA(sec)*NF(sec) =g= guess.l(sec);
+
+Qcons3(sec)$(ord(sec)=3)   .. sum( s, QS(s,sec)) =e= 1;
+
+Xcons3(sec)$(ord(sec)=3)   .. Xmax(sec) =e= sum( s, Xbar(s)*QS(s,sec));
+
+Ycons3(sec)$(ord(sec)=3)   .. Ymax(sec) =e= sum( s, Ybar(s)*QS(s,sec));
+
+news3(s,sec)$(ord(sec)=3)  .. NQ(s,sec) =l= Kn*QS(s,sec);
+
+new1s3(sec)$(ord(sec)=3)   .. NF(sec) =e= sum( s, NQ(s,sec));
+
+Objls3        .. Qs3 =e= sum( (i,j,sec)$((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=3) and f(i,j)), (( Cc(i,j)*TD(i,j,sec)/0.3048)+( Cv(i,j)*De(i,j,sec) )+( Ch(i,j)*(R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec))))/10**5 )+(sum( (s,sec)$(ord(sec)=3), AR(s)*NQ(s,sec)*FC2(sec))/10**5)+(LC*sum(sec$(ord(sec)=3), FA(sec))/10**5)+ sum( (IP,sec)$(group(IP,sec)and(ord(sec)=3)), ohm(IP)) + sum( (IP,Ki,sec)$(group(IP,sec)and(ord(sec)=3)), Pik(IP,Ki)*Zik(IP,Ki)/10**5) ;
+
+Qs3.lo=0;
+
+Model linearitys3      
+        /Floors3,
+         Floorrs3,
+         Floor1s3,
+         Floor2s3,
+         Floor3s3,
+         Numfloors3,
+         Orient1s3,
+         Orient2s3,
+         maintenance1s3,
+         maintenance2s3,
+         Non1s3,
+         Non2s3,
+         Non3s3,
+         Non4s3,
+         Distance1s3,
+         Distance2s3,
+         Distance3s3,
+         Distance4s3,
+         distance11s3,
+         distance12s3,
+         distance13s3,
+         distance14s3,
+         distance15ps3,
+         distance16ps3,
+         distancef1s3,
+         Coordinate1s3,
+         Coordinate2s3,
+         Coordinate3s3,
+         Coordinate4s3,
+         Areals3,
+         Areals31
+         Qcons3,
+         Xcons3,
+         Ycons3,
+         news3,
+         new1s3,
+         aoes3,
+         aoe1s3,
+         aoe2s3,
+         aoe3s3,
+         values3,
+         maxxs3,
+         max1s3,
+         max2s3,
+         Objls3/;
+
+option limrow = 1000;
+
+option solvelink=5;
+
+solve linearitys3 using minlp minimizing Qs3;
+
+display x.l, y.l, l.l, d.l, V.l, O.l, Qs3.l, Xmax.l, Ymax.l, FA.l ;
+
+*sec 4 =======================================================================================================
+        
+equations
+         Floors4          Should be assigned to one floor 
+         Floorrs4         test
+         Floor1s4         floor constraints value of z 
+         Floor2s4         floor constraints value of z 
+         Floor3s4         floor constraints value of z 
+         Numfloors4       number of floor 
+         Orient1s4        equipment orientation constraints length 
+         Orient2s4        equipment orientation constraints depth 
+         maintenance1s4   maintenance spacing required
+         maintenance2s4   maintenance spacing required
+         Non1s4           non overlapping constraints 
+         Non2s4           non overlapping constraints 
+         Non3s4           non overlapping constraints 
+         Non4s4           non overlapping constraints 
+         Distance1s4      distance constraint 
+         Distance2s4      distance constraint 
+         Distance3s4      distance constraint 
+         Distance4s4      distance constraint 
+         distance11s4     absolute distance constraints 
+         distance12s4     absolute distance constraints 
+         distance13s4     absolute distance constraints 
+         distance14s4     absolute distance constraints 
+         distance15ps4    absolute distance constraints
+         distance16ps4    absolute distance constraints
+         distancef1s4     distance constaints
+         Coordinate1s4    coordinate constaints 
+         Coordinate2s4    coordinate constaints 
+         Coordinate3s4    coordinate constaints 
+         Coordinate4s4    coordinate constaints 
+         Areals4          plant area linearity 
+         Areals41         lowerbound of section area
+         Qcons4           QS constraint 
+         Xcons4           x constaint 
+         Ycons4           y constaint 
+         news4            linearization constraints 
+         new1s4           linearization constraints 
+         Objls4           objective function linear
+         aoes4            area of exposure constaint
+         aoe1s4           area of exposure constaint
+         aoe2s4           area of exposure constaint
+         aoe3s4           area of exposure constaint
+         values4          the value of exposure
+         maxxs4           maximum probable property damage constaint
+         max1s4           Actual probable property damage constaint
+         max2s4           one configuration can be installed per pertinent process unit;
+         
+Floors4(i,sec)$((group(i,sec))and(mass.l(i)+massf(i)<Mmax(sec))and(ord(sec)=4)) ..    sum(k, V(i,sec,k)) =e= 1;
+
+Floorrs4(kt,sec)$((ord(sec)=4)) .. sum(i$(group(i,sec)and(mass.l(i)+massf(i)=Mmax(sec))), V(i,sec,kt)) =g= sum(i$(group(i,sec)),wax(i,sec));
+
+Floor1s4(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=4)) ..   Z(i,j,sec) =g= V(i,sec,k)+V(j,sec,k)-1;
+
+Floor2s4(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=4)) ..    Z(i,j,sec) =l= 1-V(i,sec,k)+V(j,sec,k);
+
+Floor3s4(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=4)) ..    Z(i,j,sec) =l= 1+V(i,sec,k)-V(j,sec,k);
+
+Numfloors4(i,sec)$(group(i,sec)and(ord(sec)=4)) .. NF(sec) =g= sum( k, ord(k)*V(i,sec,k) );
+
+Orient1s4(i,sec)$(group(i,sec) and (ord(sec)=4))      .. l(i) =e= (alpha(i)*O(i))+(beta(i)*(1-O(i)));
+
+Orient2s4(i,sec)$(group(i,sec) and (ord(sec)=4))      .. d(i) =e= alpha(i)+beta(i)-l(i);
+
+maintenance1s4(i,sec)$(group(i,sec) and (ord(sec)=4)) .. vmainx(i) =e= (mainx(i)*O(i))+(mainy(i)*(1-O(i)));
+
+maintenance2s4(i,sec)$(group(i,sec) and (ord(sec)=4)) .. vmainy(i) =e= mainx(i)+mainy(i)-vmainx(i);
+
+Non1s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4))       .. x(i,sec)-x(j,sec)+(M(sec)*(1-Z(i,j,sec)+Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non2s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4))       .. x(j,sec)-x(i,sec)+(M(sec)*(2-Z(i,j,sec)-Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non3s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4))       .. y(i,sec)-y(j,sec)+(M(sec)*(2-Z(i,j,sec)+Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Non4s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4))       .. y(j,sec)-y(i,sec)+(M(sec)*(3-Z(i,j,sec)-Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Distance1s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4) and f(i,j))  .. R(i,j,sec)-Le(i,j,sec) =e= x(i,sec)-x(j,sec);
+
+Distance2s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4) and f(i,j))  .. A(i,j,sec)-B(i,j,sec) =e= y(i,sec)-y(j,sec);
+
+Distance3s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4) and f(i,j))  .. U(i,j,sec)-De(i,j,sec) =e= H(sec)*sum( k, ord(k)*(V(i,sec,k)-V(j,sec,k)));
+
+Distance4s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4) and f(i,j))  .. TD(i,j,sec) =e= R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec)+U(i,j,sec)+De(i,j,sec);
+
+distance11s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4)) .. R(i,j,sec) =l= M(sec)*Wx(i,j);
+
+distance12s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4)) .. Le(i,j,sec) =l= M(sec)*(1-Wx(i,j));
+
+distance13s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4)) .. A(i,j,sec) =l= M(sec)*Wy(i,j);
+
+distance14s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4)) .. B(i,j,sec) =l= M(sec)*(1-Wy(i,j));
+
+distance15ps4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4)).. U(i,j,sec) =l= M(sec)*Wz(i,j);
+
+distance16ps4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4)).. De(i,j,sec) =l= M(sec)*(1-Wz(i,j));
+
+distancef1s4(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4)) .. TD(i,j,sec) =e= TD(j,i,sec);
+
+Coordinate1s4(i,sec)$(group(i,sec)and(ord(sec)=4)) .. x(i,sec) =g= (l(i)/2)+vmainx(i);
+
+Coordinate2s4(i,sec)$(group(i,sec)and(ord(sec)=4)) .. y(i,sec) =g= (d(i)/2)+vmainy(i);
+
+Coordinate3s4(i,sec)$(group(i,sec)and(ord(sec)=4))   .. x(i,sec)+(l(i)/2)+vmainx(i) =l= Xmax(sec);
+
+Coordinate4s4(i,sec)$(group(i,sec)and(ord(sec)=4))   .. y(i,sec)+(d(i)/2)+vmainy(i) =l= Ymax(sec);
+
+aoes4(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=4))   .. TD(IP,j,sec) =e= Din(IP,j,sec) + Dout(IP,j,sec);
+
+aoe1s4(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=4))  .. Din(IP,j,sec) =l= Dei(IP)*Yy(IP,j);
+
+aoe2s4(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=4))  .. Dout(IP,j,sec) =g= Dei(IP)*(1-Yy(IP,j));
+
+aoe3s4(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=4))  .. Dout(IP,j,sec) =l= Mm*(1-Yy(IP,j));
+
+values4(IP,sec)$(group(IP,sec) and (ord(sec)=4))       .. Ve(IP) =e= CP.l(IP)+sum( j$((pre(IP)<>ord(j)) and group(j,sec)), (CP.l(j)*Yy(IP,j))-((CP.l(j)/Dei(IP))*Din(IP,j,sec)));
+
+maxxs4(IP,sec)$(group(IP,sec) and (ord(sec)=4))    .. ohmz(IP) =e= DF(IP)*Ve(IP);
+
+max1s4(IP,sec)$(group(IP,sec) and (ord(sec)=4))    .. ohm(IP) =e= sum( Ki, grammar(IP,Ki)*ohmz(IP)*Zik(IP,Ki));
+
+max2s4(IP,sec)$(group(IP,sec) and (ord(sec)=4))    .. sum( Ki, Zik(IP,Ki)) =e= 1	;
+
+Areals4(sec)$(ord(sec)=4)  .. FA(sec) =e= sum( s, AR(s)*QS(s,sec));
+
+Areals41(sec)$(ord(sec)=4) .. FA(sec)*NF(sec) =g= guess.l(sec);
+
+Qcons4(sec)$(ord(sec)=4)   .. sum( s, QS(s,sec)) =e= 1;
+
+Xcons4(sec)$(ord(sec)=4)   .. Xmax(sec) =e= sum( s, Xbar(s)*QS(s,sec));
+
+Ycons4(sec)$(ord(sec)=4)   .. Ymax(sec) =e= sum( s, Ybar(s)*QS(s,sec));
+
+news4(s,sec)$(ord(sec)=4)  .. NQ(s,sec) =l= Kn*QS(s,sec);
+
+new1s4(sec)$(ord(sec)=4)   .. NF(sec) =e= sum( s, NQ(s,sec));
+
+Objls4        .. Qs4 =e= sum( (i,j,sec)$((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=4) and f(i,j)), (( Cc(i,j)*TD(i,j,sec)/0.3048)+( Cv(i,j)*De(i,j,sec) )+( Ch(i,j)*(R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec))))/10**5 )+(sum( (s,sec)$(ord(sec)=4), AR(s)*NQ(s,sec)*FC2(sec))/10**5)+(LC*sum(sec$(ord(sec)=4), FA(sec))/10**5)+ sum( (IP,sec)$(group(IP,sec)and(ord(sec)=4)), ohm(IP)) + sum( (IP,Ki,sec)$(group(IP,sec)and(ord(sec)=4)), Pik(IP,Ki)*Zik(IP,Ki)/10**5) ;
+
+Qs4.lo=0;
+
+Model linearitys4      
+        /Floors4,
+         Floorrs4,
+         Floor1s4,
+         Floor2s4,
+         Floor3s4,
+         Numfloors4,
+         Orient1s4,
+         Orient2s4,
+         maintenance1s4,
+         maintenance2s4,
+         Non1s4,
+         Non2s4,
+         Non3s4,
+         Non4s4,
+         Distance1s4,
+         Distance2s4,
+         Distance3s4,
+         Distance4s4,
+         distance11s4,
+         distance12s4,
+         distance13s4,
+         distance14s4,
+         distance15ps4,
+         distance16ps4,
+         distancef1s4,
+         Coordinate1s4,
+         Coordinate2s4,
+         Coordinate3s4,
+         Coordinate4s4,
+         Areals4,
+         Areals41
+         Qcons4,
+         Xcons4,
+         Ycons4,
+         news4,
+         new1s4,
+         aoes4,
+         aoe1s4,
+         aoe2s4,
+         aoe3s4,
+         values4,
+         maxxs4,
+         max1s4,
+         max2s4,
+         Objls4/;
+
+option limrow = 1000;
+
+option solvelink=5;
+
+solve linearitys4 using minlp minimizing Qs4;
+
+display x.l, y.l, l.l, d.l, V.l, O.l, Qs4.l, Xmax.l, Ymax.l, FA.l;
+
+*sec 5 =======================================================================================================
+        
+equations
+         Floors5          Should be assigned to one floor 
+         Floorrs5         test
+         Floor1s5         floor constraints value of z 
+         Floor2s5         floor constraints value of z 
+         Floor3s5         floor constraints value of z 
+         Numfloors5       number of floor 
+         Orient1s5        equipment orientation constraints length 
+         Orient2s5        equipment orientation constraints depth 
+         maintenance1s5   maintenance spacing required
+         maintenance2s5   maintenance spacing required
+         Non1s5           non overlapping constraints 
+         Non2s5           non overlapping constraints 
+         Non3s5           non overlapping constraints 
+         Non4s5           non overlapping constraints 
+         Distance1s5      distance constraint 
+         Distance2s5      distance constraint 
+         Distance3s5      distance constraint 
+         Distance4s5      distance constraint 
+         distance11s5     absolute distance constraints 
+         distance12s5     absolute distance constraints 
+         distance13s5     absolute distance constraints 
+         distance14s5     absolute distance constraints 
+         distance15ps5    absolute distance constraints
+         distance16ps5    absolute distance constraints
+         distancef1s5     distance constaints
+         Coordinate1s5    coordinate constaints 
+         Coordinate2s5    coordinate constaints 
+         Coordinate3s5    coordinate constaints 
+         Coordinate4s5    coordinate constaints 
+         Areals5          plant area linearity 
+         Areals51         lowerbound of section area
+         Qcons5           QS constraint 
+         Xcons5           x constaint 
+         Ycons5           y constaint 
+         news5            linearization constraints 
+         new1s5           linearization constraints 
+         Objls5           objective function linear
+         aoes5            area of exposure constaint
+         aoe1s5           area of exposure constaint
+         aoe2s5           area of exposure constaint
+         aoe3s5           area of exposure constaint
+         values5          the value of exposure
+         maxxs5           maximum probable property damage constaint
+         max1s5           Actual probable property damage constaint
+         max2s5           one configuration can be installed per pertinent process unit;
+         
+Floors5(i,sec)$((group(i,sec))and(mass.l(i)+massf(i)<Mmax(sec))and(ord(sec)=5)) ..    sum(k, V(i,sec,k)) =e= 1;
+
+Floorrs5(kt,sec)$((ord(sec)=5)) .. sum(i$(group(i,sec)and(mass.l(i)+massf(i)=Mmax(sec))), V(i,sec,kt)) =g= sum(i$(group(i,sec)),wax(i,sec));
+
+Floor1s5(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=5)) ..   Z(i,j,sec) =g= V(i,sec,k)+V(j,sec,k)-1;
+
+Floor2s5(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=5)) ..    Z(i,j,sec) =l= 1-V(i,sec,k)+V(j,sec,k);
+
+Floor3s5(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=5)) ..    Z(i,j,sec) =l= 1+V(i,sec,k)-V(j,sec,k);
+
+Numfloors5(i,sec)$(group(i,sec)and(ord(sec)=5)) .. NF(sec) =g= sum( k, ord(k)*V(i,sec,k) );
+
+Orient1s5(i,sec)$(group(i,sec) and (ord(sec)=5))      .. l(i) =e= (alpha(i)*O(i))+(beta(i)*(1-O(i)));
+
+Orient2s5(i,sec)$(group(i,sec) and (ord(sec)=5))      .. d(i) =e= alpha(i)+beta(i)-l(i);
+
+maintenance1s5(i,sec)$(group(i,sec) and (ord(sec)=5)) .. vmainx(i) =e= (mainx(i)*O(i))+(mainy(i)*(1-O(i)));
+
+maintenance2s5(i,sec)$(group(i,sec) and (ord(sec)=5)) .. vmainy(i) =e= mainx(i)+mainy(i)-vmainx(i);
+
+Non1s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5))       .. x(i,sec)-x(j,sec)+(M(sec)*(1-Z(i,j,sec)+Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non2s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5))       .. x(j,sec)-x(i,sec)+(M(sec)*(2-Z(i,j,sec)-Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non3s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5))       .. y(i,sec)-y(j,sec)+(M(sec)*(2-Z(i,j,sec)+Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Non4s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5))       .. y(j,sec)-y(i,sec)+(M(sec)*(3-Z(i,j,sec)-Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Distance1s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5) and f(i,j))  .. R(i,j,sec)-Le(i,j,sec) =e= x(i,sec)-x(j,sec);
+
+Distance2s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5) and f(i,j))  .. A(i,j,sec)-B(i,j,sec) =e= y(i,sec)-y(j,sec);
+
+Distance3s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5) and f(i,j))  .. U(i,j,sec)-De(i,j,sec) =e= H(sec)*sum( k, ord(k)*(V(i,sec,k)-V(j,sec,k)));
+
+Distance4s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5) and f(i,j))  .. TD(i,j,sec) =e= R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec)+U(i,j,sec)+De(i,j,sec);
+
+distance11s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5)) .. R(i,j,sec) =l= M(sec)*Wx(i,j);
+
+distance12s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5)) .. Le(i,j,sec) =l= M(sec)*(1-Wx(i,j));
+
+distance13s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5)) .. A(i,j,sec) =l= M(sec)*Wy(i,j);
+
+distance14s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5)) .. B(i,j,sec) =l= M(sec)*(1-Wy(i,j));
+
+distance15ps5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5)).. U(i,j,sec) =l= M(sec)*Wz(i,j);
+
+distance16ps5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5)).. De(i,j,sec) =l= M(sec)*(1-Wz(i,j));
+
+distancef1s5(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5)) .. TD(i,j,sec) =e= TD(j,i,sec);
+
+Coordinate1s5(i,sec)$(group(i,sec)and(ord(sec)=5)) .. x(i,sec) =g= (l(i)/2)+vmainx(i);
+
+Coordinate2s5(i,sec)$(group(i,sec)and(ord(sec)=5)) .. y(i,sec) =g= (d(i)/2)+vmainy(i);
+
+Coordinate3s5(i,sec)$(group(i,sec)and(ord(sec)=5))   .. x(i,sec)+(l(i)/2)+vmainx(i) =l= Xmax(sec);
+
+Coordinate4s5(i,sec)$(group(i,sec)and(ord(sec)=5))   .. y(i,sec)+(d(i)/2)+vmainy(i) =l= Ymax(sec);
+
+aoes5(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=5))   .. TD(IP,j,sec) =e= Din(IP,j,sec) + Dout(IP,j,sec);
+
+aoe1s5(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=5))  .. Din(IP,j,sec) =l= Dei(IP)*Yy(IP,j);
+
+aoe2s5(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=5))  .. Dout(IP,j,sec) =g= Dei(IP)*(1-Yy(IP,j));
+
+aoe3s5(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=5))  .. Dout(IP,j,sec) =l= Mm*(1-Yy(IP,j));
+
+values5(IP,sec)$(group(IP,sec) and (ord(sec)=5))       .. Ve(IP) =e= CP.l(IP)+sum( j$((pre(IP)<>ord(j)) and group(j,sec)), (CP.l(j)*Yy(IP,j))-((CP.l(j)/Dei(IP))*Din(IP,j,sec)));
+
+maxxs5(IP,sec)$(group(IP,sec) and (ord(sec)=5))    .. ohmz(IP) =e= DF(IP)*Ve(IP);
+
+max1s5(IP,sec)$(group(IP,sec) and (ord(sec)=5))    .. ohm(IP) =e= sum( Ki, grammar(IP,Ki)*ohmz(IP)*Zik(IP,Ki));
+
+max2s5(IP,sec)$(group(IP,sec) and (ord(sec)=5))    .. sum( Ki, Zik(IP,Ki)) =e= 1	;
+
+Areals5(sec)$(ord(sec)=5)  .. FA(sec) =e= sum( s, AR(s)*QS(s,sec));
+
+Areals51(sec)$(ord(sec)=5) .. FA(sec)*NF(sec) =g= guess.l(sec);
+
+Qcons5(sec)$(ord(sec)=5)   .. sum( s, QS(s,sec)) =e= 1;
+
+Xcons5(sec)$(ord(sec)=5)   .. Xmax(sec) =e= sum( s, Xbar(s)*QS(s,sec));
+
+Ycons5(sec)$(ord(sec)=5)   .. Ymax(sec) =e= sum( s, Ybar(s)*QS(s,sec));
+
+news5(s,sec)$(ord(sec)=5)  .. NQ(s,sec) =l= Kn*QS(s,sec);
+
+new1s5(sec)$(ord(sec)=5)   .. NF(sec) =e= sum( s, NQ(s,sec));
+
+Objls5        .. Qs5 =e= sum( (i,j,sec)$((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=5) and f(i,j)), (( Cc(i,j)*TD(i,j,sec)/0.3048)+( Cv(i,j)*De(i,j,sec) )+( Ch(i,j)*(R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec))))/10**5 )+(sum( (s,sec)$(ord(sec)=5), AR(s)*NQ(s,sec)*FC2(sec))/10**5)+(LC*sum(sec$(ord(sec)=5), FA(sec))/10**5)+ sum( (IP,sec)$(group(IP,sec)and(ord(sec)=5)), ohm(IP)) + sum( (IP,Ki,sec)$(group(IP,sec)and(ord(sec)=5)), Pik(IP,Ki)*Zik(IP,Ki)/10**5) ;
+
+Qs5.lo=0;
+
+Model linearitys5      
+        /Floors5,
+         Floorrs5,
+         Floor1s5,
+         Floor2s5,
+         Floor3s5,
+         Numfloors5,
+         Orient1s5,
+         Orient2s5,
+         maintenance1s5,
+         maintenance2s5,
+         Non1s5,
+         Non2s5,
+         Non3s5,
+         Non4s5,
+         Distance1s5,
+         Distance2s5,
+         Distance3s5,
+         Distance4s5,
+         distance11s5,
+         distance12s5,
+         distance13s5,
+         distance14s5,
+         distance15ps5,
+         distance16ps5,
+         distancef1s5,
+         Coordinate1s5,
+         Coordinate2s5,
+         Coordinate3s5,
+         Coordinate4s5,
+         Areals5,
+         Areals51,
+         Qcons5,
+         Xcons5,
+         Ycons5,
+         news5,
+         new1s5,
+         aoes5,
+         aoe1s5,
+         aoe2s5,
+         aoe3s5,
+         values5,
+         maxxs5,
+         max1s5,
+         max2s5,
+         Objls5/;
+
+option limrow = 1000;
+
+option solvelink=5;
+
+solve linearitys5 using minlp minimizing Qs5;
+
+display x.l, y.l, l.l, d.l, V.l, O.l, Qs5.l, Xmax.l, Ymax.l, FA.l;
+
+*sec 6 =======================================================================================================
+        
+equations
+         Floors6          Should be assigned to one floor 
+         Floorrs6         test
+         Floor1s6         floor constraints value of z 
+         Floor2s6         floor constraints value of z 
+         Floor3s6         floor constraints value of z 
+         Numfloors6       number of floor 
+         Orient1s6        equipment orientation constraints length 
+         Orient2s6        equipment orientation constraints depth 
+         maintenance1s6   maintenance spacing required
+         maintenance2s6   maintenance spacing required
+         Non1s6           non overlapping constraints 
+         Non2s6           non overlapping constraints 
+         Non3s6           non overlapping constraints 
+         Non4s6           non overlapping constraints 
+         Distance1s6      distance constraint 
+         Distance2s6      distance constraint 
+         Distance3s6      distance constraint 
+         Distance4s6      distance constraint 
+         distance11s6     absolute distance constraints 
+         distance12s6     absolute distance constraints 
+         distance13s6     absolute distance constraints 
+         distance14s6     absolute distance constraints 
+         distance15ps6    absolute distance constraints
+         distance16ps6    absolute distance constraints
+         distancef1s6     distance constaints
+         Coordinate1s6    coordinate constaints 
+         Coordinate2s6    coordinate constaints 
+         Coordinate3s6    coordinate constaints 
+         Coordinate4s6    coordinate constaints 
+         Areals6          plant area linearity 
+         Areals61         lowerbound of section area
+         Qcons6           QS constraint 
+         Xcons6           x constaint 
+         Ycons6           y constaint 
+         news6            linearization constraints 
+         new1s6           linearization constraints 
+         Objls6           objective function linear
+         aoes6            area of exposure constaint
+         aoe1s6           area of exposure constaint
+         aoe2s6           area of exposure constaint
+         aoe3s6           area of exposure constaint
+         values6          the value of exposure
+         maxxs6           maximum probable property damage constaint
+         max1s6           Actual probable property damage constaint
+         max2s6           one configuration can be installed per pertinent process unit;
+         
+Floors6(i,sec)$((group(i,sec))and(mass.l(i)+massf(i)<Mmax(sec))and(ord(sec)=6)) ..    sum(k, V(i,sec,k)) =e= 1;
+
+Floorrs6(kt,sec)$((ord(sec)=6)) .. sum(i$(group(i,sec)and(mass.l(i)+massf(i)=Mmax(sec))), V(i,sec,kt)) =g= sum(i$(group(i,sec)),wax(i,sec));
+
+Floor1s6(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=6)) ..   Z(i,j,sec) =g= V(i,sec,k)+V(j,sec,k)-1;
+
+Floor2s6(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=6)) ..    Z(i,j,sec) =l= 1-V(i,sec,k)+V(j,sec,k);
+
+Floor3s6(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=6)) ..    Z(i,j,sec) =l= 1+V(i,sec,k)-V(j,sec,k);
+
+Numfloors6(i,sec)$(group(i,sec)and(ord(sec)=6)) .. NF(sec) =g= sum( k, ord(k)*V(i,sec,k) );
+
+Orient1s6(i,sec)$(group(i,sec) and (ord(sec)=6))      .. l(i) =e= (alpha(i)*O(i))+(beta(i)*(1-O(i)));
+
+Orient2s6(i,sec)$(group(i,sec) and (ord(sec)=6))      .. d(i) =e= alpha(i)+beta(i)-l(i);
+
+maintenance1s6(i,sec)$(group(i,sec) and (ord(sec)=6)) .. vmainx(i) =e= (mainx(i)*O(i))+(mainy(i)*(1-O(i)));
+
+maintenance2s6(i,sec)$(group(i,sec) and (ord(sec)=6)) .. vmainy(i) =e= mainx(i)+mainy(i)-vmainx(i);
+
+Non1s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6))       .. x(i,sec)-x(j,sec)+(M(sec)*(1-Z(i,j,sec)+Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non2s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6))       .. x(j,sec)-x(i,sec)+(M(sec)*(2-Z(i,j,sec)-Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non3s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6))       .. y(i,sec)-y(j,sec)+(M(sec)*(2-Z(i,j,sec)+Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Non4s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6))       .. y(j,sec)-y(i,sec)+(M(sec)*(3-Z(i,j,sec)-Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Distance1s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6) and f(i,j))  .. R(i,j,sec)-Le(i,j,sec) =e= x(i,sec)-x(j,sec);
+
+Distance2s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6) and f(i,j))  .. A(i,j,sec)-B(i,j,sec) =e= y(i,sec)-y(j,sec);
+
+Distance3s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6) and f(i,j))  .. U(i,j,sec)-De(i,j,sec) =e= H(sec)*sum( k, ord(k)*(V(i,sec,k)-V(j,sec,k)));
+
+Distance4s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6) and f(i,j))  .. TD(i,j,sec) =e= R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec)+U(i,j,sec)+De(i,j,sec);
+
+distance11s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6)) .. R(i,j,sec) =l= M(sec)*Wx(i,j);
+
+distance12s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6)) .. Le(i,j,sec) =l= M(sec)*(1-Wx(i,j));
+
+distance13s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6)) .. A(i,j,sec) =l= M(sec)*Wy(i,j);
+
+distance14s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6)) .. B(i,j,sec) =l= M(sec)*(1-Wy(i,j));
+
+distance15ps6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6)).. U(i,j,sec) =l= M(sec)*Wz(i,j);
+
+distance16ps6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6)).. De(i,j,sec) =l= M(sec)*(1-Wz(i,j));
+
+distancef1s6(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6)) .. TD(i,j,sec) =e= TD(j,i,sec);
+
+Coordinate1s6(i,sec)$(group(i,sec)and(ord(sec)=6)) .. x(i,sec) =g= (l(i)/2)+vmainx(i);
+
+Coordinate2s6(i,sec)$(group(i,sec)and(ord(sec)=6)) .. y(i,sec) =g= (d(i)/2)+vmainy(i);
+
+Coordinate3s6(i,sec)$(group(i,sec)and(ord(sec)=6))   .. x(i,sec)+(l(i)/2)+vmainx(i) =l= Xmax(sec);
+
+Coordinate4s6(i,sec)$(group(i,sec)and(ord(sec)=6))   .. y(i,sec)+(d(i)/2)+vmainy(i) =l= Ymax(sec);
+
+aoes6(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=6))   .. TD(IP,j,sec) =e= Din(IP,j,sec) + Dout(IP,j,sec);
+
+aoe1s6(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=6))  .. Din(IP,j,sec) =l= Dei(IP)*Yy(IP,j);
+
+aoe2s6(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=6))  .. Dout(IP,j,sec) =g= Dei(IP)*(1-Yy(IP,j));
+
+aoe3s6(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=6))  .. Dout(IP,j,sec) =l= Mm*(1-Yy(IP,j));
+
+values6(IP,sec)$(group(IP,sec) and (ord(sec)=6))       .. Ve(IP) =e= CP.l(IP)+sum( j$((pre(IP)<>ord(j)) and group(j,sec)), (CP.l(j)*Yy(IP,j))-((CP.l(j)/Dei(IP))*Din(IP,j,sec)));
+
+maxxs6(IP,sec)$(group(IP,sec) and (ord(sec)=6))    .. ohmz(IP) =e= DF(IP)*Ve(IP);
+
+max1s6(IP,sec)$(group(IP,sec) and (ord(sec)=6))    .. ohm(IP) =e= sum( Ki, grammar(IP,Ki)*ohmz(IP)*Zik(IP,Ki));
+
+max2s6(IP,sec)$(group(IP,sec) and (ord(sec)=6))    .. sum( Ki, Zik(IP,Ki)) =e= 1	;
+
+Areals6(sec)$(ord(sec)=6)  .. FA(sec) =e= sum( s, AR(s)*QS(s,sec));
+
+Areals61(sec)$(ord(sec)=6) .. FA(sec)*NF(sec) =g= guess.l(sec);
+
+Qcons6(sec)$(ord(sec)=6)   .. sum( s, QS(s,sec)) =e= 1;
+
+Xcons6(sec)$(ord(sec)=6)   .. Xmax(sec) =e= sum( s, Xbar(s)*QS(s,sec));
+
+Ycons6(sec)$(ord(sec)=6)   .. Ymax(sec) =e= sum( s, Ybar(s)*QS(s,sec));
+
+news6(s,sec)$(ord(sec)=6)  .. NQ(s,sec) =l= Kn*QS(s,sec);
+
+new1s6(sec)$(ord(sec)=6)   .. NF(sec) =e= sum( s, NQ(s,sec));
+
+Objls6        .. Qs6 =e= sum( (i,j,sec)$((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=6) and f(i,j)), (( Cc(i,j)*TD(i,j,sec)/0.3048)+( Cv(i,j)*De(i,j,sec) )+( Ch(i,j)*(R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec))))/10**5 )+(sum( (s,sec)$(ord(sec)=6), AR(s)*NQ(s,sec)*FC2(sec))/10**5)+(LC*sum(sec$(ord(sec)=6), FA(sec))/10**5)+ sum( (IP,sec)$(group(IP,sec)and(ord(sec)=6)), ohm(IP)) + sum( (IP,Ki,sec)$(group(IP,sec)and(ord(sec)=6)), Pik(IP,Ki)*Zik(IP,Ki)/10**5) ;
+
+Qs6.lo=0;
+
+Model linearitys6      
+        /Floors6,
+         Floorrs6,
+         Floor1s6,
+         Floor2s6,
+         Floor3s6,
+         Numfloors6,
+         Orient1s6,
+         Orient2s6,
+         maintenance1s6,
+         maintenance2s6,
+         Non1s6,
+         Non2s6,
+         Non3s6,
+         Non4s6,
+         Distance1s6,
+         Distance2s6,
+         Distance3s6,
+         Distance4s6,
+         distance11s6,
+         distance12s6,
+         distance13s6,
+         distance14s6,
+         distance15ps6,
+         distance16ps6,
+         distancef1s6,
+         Coordinate1s6,
+         Coordinate2s6,
+         Coordinate3s6,
+         Coordinate4s6,
+         Areals6,
+         Areals61,
+         Qcons6,
+         Xcons6,
+         Ycons6,
+         news6,
+         new1s6,
+         aoes6,
+         aoe1s6,
+         aoe2s6,
+         aoe3s6,
+         values6,
+         maxxs6,
+         max1s6,
+         max2s6,
+         Objls6/;
+
+option limrow = 1000;
+
+option solvelink=5;
+
+solve linearitys6 using minlp minimizing Qs6;
+
+display x.l, y.l, l.l, d.l, V.l, O.l, Qs6.l, Xmax.l, Ymax.l, FA.l;
+
+*sec 7 =======================================================================================================
+        
+equations
+         Floors7          Should be assigned to one floor 
+         Floorrs7         test
+         Floor1s7         floor constraints value of z 
+         Floor2s7         floor constraints value of z 
+         Floor3s7         floor constraints value of z 
+         Numfloors7       number of floor 
+         Orient1s7        equipment orientation constraints length 
+         Orient2s7        equipment orientation constraints depth 
+         maintenance1s7   maintenance spacing required
+         maintenance2s7   maintenance spacing required
+         Non1s7           non overlapping constraints 
+         Non2s7           non overlapping constraints 
+         Non3s7           non overlapping constraints 
+         Non4s7           non overlapping constraints 
+         Distance1s7      distance constraint 
+         Distance2s7      distance constraint 
+         Distance3s7      distance constraint 
+         Distance4s7      distance constraint 
+         distance11s7     absolute distance constraints 
+         distance12s7     absolute distance constraints 
+         distance13s7     absolute distance constraints 
+         distance14s7     absolute distance constraints 
+         distance15ps7    absolute distance constraints
+         distance16ps7    absolute distance constraints
+         distancef1s7     distance constaints
+         Coordinate1s7    coordinate constaints 
+         Coordinate2s7    coordinate constaints 
+         Coordinate3s7    coordinate constaints 
+         Coordinate4s7    coordinate constaints 
+         Areals7          plant area linearity 
+         Areals71         lowerbound of area
+         Qcons7           QS constraint 
+         Xcons7           x constaint 
+         Ycons7           y constaint 
+         news7            linearization constraints 
+         new1s7           linearization constraints 
+         Objls7           objective function linear
+         aoes7            area of exposure constaint
+         aoe1s7           area of exposure constaint
+         aoe2s7           area of exposure constaint
+         aoe3s7           area of exposure constaint
+         values7          the value of exposure
+         maxxs7           maximum probable property damage constaint
+         max1s7           Actual probable property damage constaint
+         max2s7           one configuration can be installed per pertinent process unit;
+         
+Floors7(i,sec)$((group(i,sec))and(mass.l(i)+massf(i)<Mmax(sec))and(ord(sec)=7)) ..    sum(k, V(i,sec,k)) =e= 1;
+
+Floorrs7(kt,sec)$((ord(sec)=7)) .. sum(i$(group(i,sec)and(mass.l(i)+massf(i)=Mmax(sec))), V(i,sec,kt)) =g= sum(i$(group(i,sec)),wax(i,sec));
+
+Floor1s7(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=7)) ..   Z(i,j,sec) =g= V(i,sec,k)+V(j,sec,k)-1;
+
+Floor2s7(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=7)) ..    Z(i,j,sec) =l= 1-V(i,sec,k)+V(j,sec,k);
+
+Floor3s7(i,j,sec,k) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec))and(ord(sec)=7)) ..    Z(i,j,sec) =l= 1+V(i,sec,k)-V(j,sec,k);
+
+Numfloors7(i,sec)$(group(i,sec)and(ord(sec)=7)) .. NF(sec) =g= sum( k, ord(k)*V(i,sec,k) );
+
+Orient1s7(i,sec)$(group(i,sec) and (ord(sec)=7))      .. l(i) =e= (alpha(i)*O(i))+(beta(i)*(1-O(i)));
+
+Orient2s7(i,sec)$(group(i,sec) and (ord(sec)=7))      .. d(i) =e= alpha(i)+beta(i)-l(i);
+
+maintenance1s7(i,sec)$(group(i,sec) and (ord(sec)=7)) .. vmainx(i) =e= (mainx(i)*O(i))+(mainy(i)*(1-O(i)));
+
+maintenance2s7(i,sec)$(group(i,sec) and (ord(sec)=7)) .. vmainy(i) =e= mainx(i)+mainy(i)-vmainx(i);
+
+Non1s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7))       .. x(i,sec)-x(j,sec)+(M(sec)*(1-Z(i,j,sec)+Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non2s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7))       .. x(j,sec)-x(i,sec)+(M(sec)*(2-Z(i,j,sec)-Ea(i,j)+Eb(i,j))) =g= (( l(i)+l(j) )/2)+(vmainx(i)+vmainx(j));
+
+Non3s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7))       .. y(i,sec)-y(j,sec)+(M(sec)*(2-Z(i,j,sec)+Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Non4s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7))       .. y(j,sec)-y(i,sec)+(M(sec)*(3-Z(i,j,sec)-Ea(i,j)-Eb(i,j))) =g= (( d(i)+d(j) )/2)+(vmainy(i)+vmainy(j));
+
+Distance1s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7) and f(i,j))  .. R(i,j,sec)-Le(i,j,sec) =e= x(i,sec)-x(j,sec);
+
+Distance2s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7) and f(i,j))  .. A(i,j,sec)-B(i,j,sec) =e= y(i,sec)-y(j,sec);
+
+Distance3s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7) and f(i,j))  .. U(i,j,sec)-De(i,j,sec) =e= H(sec)*sum( k, ord(k)*(V(i,sec,k)-V(j,sec,k)));
+
+Distance4s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7) and f(i,j))  .. TD(i,j,sec) =e= R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec)+U(i,j,sec)+De(i,j,sec);
+
+distance11s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7)) .. R(i,j,sec) =l= M(sec)*Wx(i,j);
+
+distance12s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7)) .. Le(i,j,sec) =l= M(sec)*(1-Wx(i,j));
+
+distance13s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7)) .. A(i,j,sec) =l= M(sec)*Wy(i,j);
+
+distance14s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7)) .. B(i,j,sec) =l= M(sec)*(1-Wy(i,j));
+
+distance15ps7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7)).. U(i,j,sec) =l= M(sec)*Wz(i,j);
+
+distance16ps7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7)).. De(i,j,sec) =l= M(sec)*(1-Wz(i,j));
+
+distancef1s7(i,j,sec) $((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7)) .. TD(i,j,sec) =e= TD(j,i,sec);
+
+Coordinate1s7(i,sec)$(group(i,sec)and(ord(sec)=7)) .. x(i,sec) =g= (l(i)/2)+1;
+
+Coordinate2s7(i,sec)$(group(i,sec)and(ord(sec)=7)) .. y(i,sec) =g= (d(i)/2)+1;
+
+Coordinate3s7(i,sec)$(group(i,sec)and(ord(sec)=7))   .. x(i,sec)+(l(i)/2)+vmainx(i) =l= Xmax(sec);
+
+Coordinate4s7(i,sec)$(group(i,sec)and(ord(sec)=7))   .. y(i,sec)+(d(i)/2)+vmainy(i) =l= Ymax(sec);
+
+aoes7(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=7))   .. TD(IP,j,sec) =e= Din(IP,j,sec) + Dout(IP,j,sec);
+
+aoe1s7(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=7))  .. Din(IP,j,sec) =l= Dei(IP)*Yy(IP,j);
+
+aoe2s7(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=7))  .. Dout(IP,j,sec) =g= Dei(IP)*(1-Yy(IP,j));
+
+aoe3s7(IP,j,sec) $((pre(IP)<>ord(j)) and (group(IP,sec)) and (group(j,sec)) and (ord(sec)=7))  .. Dout(IP,j,sec) =l= Mm*(1-Yy(IP,j));
+
+values7(IP,sec)$(group(IP,sec) and (ord(sec)=7))   .. Ve(IP) =e= CP.l(IP)+sum( j$((pre(IP)<>ord(j)) and group(j,sec)), (CP.l(j)*Yy(IP,j))-((CP.l(j)/Dei(IP))*Din(IP,j,sec)));
+
+maxxs7(IP,sec)$(group(IP,sec) and (ord(sec)=7))    .. ohmz(IP) =e= DF(IP)*Ve(IP);
+
+max1s7(IP,sec)$(group(IP,sec) and (ord(sec)=7))    .. ohm(IP) =e= sum( Ki, grammar(IP,Ki)*ohmz(IP)*Zik(IP,Ki));
+
+max2s7(IP,sec)$(group(IP,sec) and (ord(sec)=7))    .. sum( Ki, Zik(IP,Ki)) =e= 1	;
+
+Areals7(sec)$(ord(sec)=7)  .. FA(sec) =e= sum( s, AR(s)*QS(s,sec));
+
+Areals71(sec)$(ord(sec)=7) .. FA(sec)*NF(sec) =g= guess.l(sec);
+
+Qcons7(sec)$(ord(sec)=7)   .. sum( s, QS(s,sec)) =e= 1;
+
+Xcons7(sec)$(ord(sec)=7)   .. Xmax(sec) =e= sum( s, Xbar(s)*QS(s,sec));
+
+Ycons7(sec)$(ord(sec)=7)   .. Ymax(sec) =e= sum( s, Ybar(s)*QS(s,sec));
+
+news7(s,sec)$(ord(sec)=7)  .. NQ(s,sec) =l= Kn*QS(s,sec);
+
+new1s7(sec)$(ord(sec)=7)   .. NF(sec) =e= sum( s, NQ(s,sec));
+
+Objls7        .. Qs7 =e= sum( (i,j,sec)$((ord(i)<>ord(j)) and (group(i,sec)) and (group(j,sec)) and (ord(sec)=7) and f(i,j)), (( Cc(i,j)*TD(i,j,sec)/0.3048)+( Cv(i,j)*De(i,j,sec) )+( Ch(i,j)*(R(i,j,sec)+Le(i,j,sec)+A(i,j,sec)+B(i,j,sec))))/10**5 )+(sum( (s,sec)$(ord(sec)=7), AR(s)*NQ(s,sec)*FC2(sec))/10**5)+(LC*sum(sec$(ord(sec)=7), FA(sec))/10**5)+ sum( (IP,sec)$(group(IP,sec)and(ord(sec)=7)), ohm(IP)) + sum( (IP,Ki,sec)$(group(IP,sec)and(ord(sec)=7)), Pik(IP,Ki)*Zik(IP,Ki)/10**5) ;
+
+Qs7.lo=0;
+
+Model linearitys7      
+        /Floors7,
+         Floorrs7,
+         Floor1s7,
+         Floor2s7,
+         Floor3s7,
+         Numfloors7,
+         Orient1s7,
+         Orient2s7,
+         maintenance1s7,
+         maintenance2s7,
+         Non1s7,
+         Non2s7,
+         Non3s7,
+         Non4s7,
+         Distance1s7,
+         Distance2s7,
+         Distance3s7,
+         Distance4s7,
+         distance11s7,
+         distance12s7,
+         distance13s7,
+         distance14s7,
+         distance15ps7,
+         distance16ps7,
+         distancef1s7,
+         Coordinate1s7,
+         Coordinate2s7,
+         Coordinate3s7,
+         Coordinate4s7,
+         Areals7,
+         Areals71,
+         Qcons7,
+         Xcons7,
+         Ycons7,
+         news7,
+         new1s7,
+         aoes7,
+         aoe1s7,
+         aoe2s7,
+         aoe3s7,
+         values7,
+         maxxs7,
+         max1s7,
+         max2s7,
+         Objls7/;
+
+option limrow = 1000;
+
+option solvelink=5;
+
+solve linearitys7 using minlp minimizing Qs7;
+
+display x.l, y.l, l.l, d.l, V.l, O.l, Qs7.l, Xmax.l, Ymax.l, FA.l ;
+
+*Layout of seven sections objective model  ===========================================================================================================================
+
+parameter
+        alphag(sec)     'dimension of s section'
+        betag(sec)      'dimension of s section';
+        
+alphag(sec) = Xmax.l(sec);
+betag(sec)  = Ymax.l(sec);
+ss          = max(sum( sec, alphag(sec)), sum( sec, betag(sec)));
+
+display alphag, betag, ss;
+
+Parameter csec(sec,secx) connection cost between sections ($ per m)
+          hcsec(sec,secx) horizontal cost between sections ($ per m year) ;
+          
+csec(sec,secx)=sum((i,j)$((group(i,sec)) and (group(j,secx)) and (f(i,j)=0) and (ord(i)<>ord(j)) and (ord(sec)<>ord(secx))), Cc(i,j));
+
+hcsec(sec,secx)=sum((i,j)$((group(i,sec)) and (group(j,secx)) and (f(i,j)=0) and (ord(i)<>ord(j)) and (ord(sec)<>ord(secx))), Ch(i,j));
+
+display csec, hcsec;
+
+equation
+        length         length s eq
+        delth          delth s eq
+        nons1          non overlapping for s
+        nons2          non overlapping for s
+        nons3          non overlapping for s
+        nons4          non overlapping for s
+        relative1      relative s1
+        relative2      relative s2
+        relative3      relative s3
+        relative4      s4
+        relative5      s5
+        relative6      s6
+        relative7      s7
+        coordinates1   coordinate s
+        coordinates2   coordinate s
+        coordinates3   coordinate s
+        coordinates4   coordinate s
+        areas          area for s
+        objs           obj for s    ;
+        
+length(sec) .. ll(sec) =e= (alphag(sec)*OO(sec))+(betag(sec)*(1-OO(sec)));
+
+delth(sec)  .. dd(sec) =e= alphag(sec)+betag(sec)-ll(sec);
+
+nons1(sec,secx)$(ord(sec)<>ord(secx))     .. (xxx(sec)-xxx(secx))+(ss*(Eaa(sec,secx)+Ebb(sec,secx))) =g= ((ll(sec)+ll(secx))*0.8);
+                                
+nons2(sec,secx)$(ord(sec)<>ord(secx))     .. xxx(secx)-xxx(sec)+(ss*(1-Eaa(sec,secx)+Ebb(sec,secx))) =g= ((ll(sec)+ll(secx))*0.8);
+                                
+nons3(sec,secx)$(ord(sec)<>ord(secx))     .. yyy(sec)-yyy(secx)+(ss*(1+Eaa(sec,secx)-Ebb(sec,secx))) =g= ((dd(sec)+dd(secx))*0.8);
+                                
+nons4(sec,secx)$(ord(sec)<>ord(secx))     .. yyy(secx)-yyy(sec)+(ss*(2-Eaa(sec,secx)-Ebb(sec,secx))) =g= ((dd(sec)+dd(secx))*0.8);
+
+relative1(sec,secx)$(ord(sec)<>ord(secx)) .. RR(sec,secx)-Lee(sec,secx) =e= xxx(sec)-xxx(secx);
+                                
+relative2(sec,secx)$(ord(sec)<>ord(secx)) .. AA(sec,secx)-BB(sec,secx) =e= yyy(sec)-yyy(secx);
+                                
+relative3(sec,secx)$(ord(sec)<>ord(secx)) .. TDD(sec,secx) =e= RR(sec,secx)+Lee(sec,secx)+AA(sec,secx)+BB(sec,secx);
+
+relative4(sec,secx)$(ord(sec)<>ord(secx)) .. RR(sec,secx) =l= ss*Wxx(sec,secx);
+                                          
+relative5(sec,secx)$(ord(sec)<>ord(secx)) .. Lee(sec,secx) =l= ss*(1-Wxx(sec,secx));
+                                          
+relative6(sec,secx)$(ord(sec)<>ord(secx)) .. AA(sec,secx) =l= ss*Wyy(sec,secx);
+                                          
+relative7(sec,secx)$(ord(sec)<>ord(secx)) .. BB(sec,secx) =l= ss*(1-Wyy(sec,secx));
+
+coordinates1(sec) .. xxx(sec) =g= ll(sec)/2;
+                                
+coordinates2(sec) .. yyy(sec) =g= dd(sec)/2;
+
+coordinates3(sec) .. xxx(sec)+(ll(sec)*0.5) =l= xxxmax;
+
+coordinates4(sec) .. yyy(sec)+(dd(sec)*0.5) =l= yyymax;
+
+areas             .. FAs =e= xxxmax*yyymax;
+
+objs              .. QQ =e= sum( (sec,secx), (csec(sec,secx)+hcsec(sec,secx))*TDD(sec,secx))+((LC+FC1)*FAs);
+
+QQ.lo=0;
+
+model final
+    /length,
+     delth,
+     nons1,
+     nons2,
+     nons3,
+     nons4,
+     relative1,
+     relative2,
+     relative3,
+     relative4,
+     relative5,
+     relative6,
+     relative7,
+     coordinates1,
+     coordinates2,
+     coordinates3,
+     coordinates4,
+     areas,
+     objs/;
+     
+solve final using minlp minimizing QQ;
+
+parameter
+        newX(i,sec)         final x cordinate
+        newY(i,sec)         final Y cordinate
+        newL(i,sec)         final length
+        newD(i,sec)         final delth
+        miniX               minimum X coordinate
+        miniY               minimum y coordinate;
+        
+miniX=smin(sec,xxx.l(sec));
+
+miniY=smin(sec,yyy.l(sec));
+
+newL(i,sec)$group(i,sec) = (l.l(i)*OO.l(sec))+(d.l(i)*(1-OO.l(sec)));
+
+newD(i,sec)$group(i,sec) = l.l(i)+d.l(i)-newL(i,sec);
+        
+newX(i,sec)$(group(i,sec)and(xxx.l(sec)>miniX)) = (((x.l(i,sec)-(0.5*Xmax.l(sec)))+xxx.l(sec))*OO.l(sec))+((1-OO.l(sec))*((y.l(i,sec)-(0.5*Ymax.l(sec)))+xxx.l(sec)));
+
+newX(i,sec)$(group(i,sec)and(xxx.l(sec)=miniX)) = (x.l(i,sec)*OO.l(sec))+(y.l(i,sec)*(1-OO.l(sec)));
+        
+newY(i,sec)$(group(i,sec)and(yyy.l(sec)>=miniY)) = (((y.l(i,sec)-(0.5*Ymax.l(sec)))+yyy.l(sec))*OO.l(sec))+((1-OO.l(sec))*(yyy.l(sec)-(X.l(i,sec)-(0.5*Xmax.l(sec)))));
+
+display  newX, newY, newL, newD, miniX, miniY;
