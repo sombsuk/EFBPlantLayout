@@ -14,7 +14,7 @@ This repository contains the GAMS optimization code, AutoCAD layout drawing, and
 
 > **Sukpancharoen, S., Janta-in, C., Sakdee, P., & Srinophakun, T. R.** (2025). Comprehensive plant layout optimization for empty fruit bunch biodiesel production: A multi-floor MINLP approach with safety integration. *Results in Control and Optimization*, *21*, 100624. https://doi.org/10.1016/j.rico.2025.100624
 
-**Open Access** under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 (CC BY-NC-ND 4.0) license — freely available at [ScienceDirect](https://doi.org/10.1016/j.rico.2025.100624).
+**Open Access** under Creative Commons license — freely available at [ScienceDirect](https://doi.org/10.1016/j.rico.2025.100624).
 
 ## Key Features
 
